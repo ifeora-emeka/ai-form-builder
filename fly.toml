@@ -5,6 +5,11 @@ app = "ai-form-builder"
 
 [env]
   PORT = "8080"
+  NEXT_PUBLIC_ENV = "production"
 
 [experimental]
   allowed_public_ports = [8080]
+
+[http]
+  [http.tls]
+    certs = "auto"
