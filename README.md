@@ -12,7 +12,8 @@
 
 - ⚡ <b>Prompt-to-Form AI</b> – Instantly generate forms from natural language prompts
 - 🖱️ <b>Drag & Drop Builder</b> – Visually edit forms with a simple drag-and-drop interface
-- 🌐 <b>Server-Side Rendering</b> – Fast, SEO-friendly, and scalable
+- � <b>Form Customization</b> – Customize form colors, themes, and styling to match your brand
+- �🌐 <b>Server-Side Rendering</b> – Fast, SEO-friendly, and scalable
 - 📱 <b>PWA Support</b> – Installable, offline-ready, and mobile-friendly
 - 🔄 <b>Background Sync</b> – Never lose your work, even offline
 - 🌙 <b>Dark Mode</b> – Beautiful in both light and dark themes
