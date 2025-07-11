@@ -1,7 +1,7 @@
 app = "ai-form-builder"
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = "server/Dockerfile"
 
 [env]
   PORT = "8080"
