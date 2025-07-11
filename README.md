@@ -43,4 +43,9 @@
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" height="32" alt="Prisma" /><br/><b>Prisma</b></td>
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" height="32" alt="Docker" /><br/><b>Docker</b></td>
   </tr>
+  <tr>
+    <td align="center"><img src="https://brandlogos.net/wp-content/uploads/2025/03/gemini_icon-logo_brandlogos.net_bqzeu-512x512.png" height="32" alt="Gemini AI" /><br/><b>Gemini AI</b></td>
+    <td align="center"><img src="https://avatars.githubusercontent.com/u/126733545?s=32&v=4" height="32" alt="LangChain" /><br/><b>LangChain</b></td>
+    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" height="32" alt="AWS" /><br/><b>AWS</b></td>
+  </tr>
 </table>
