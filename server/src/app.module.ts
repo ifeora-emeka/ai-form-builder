@@ -8,7 +8,7 @@ import { AppService } from './app.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: join(__dirname, '..', '..', '..', '.env'),
+      envFilePath: join(__dirname, '..', '..', '.env'),
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
