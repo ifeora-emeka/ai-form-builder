@@ -40,7 +40,7 @@
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg" height="32" alt="Socket.io" /><br/><b>Socket.io</b></td>
     <td align="center"><img src="https://res.cloudinary.com/cloudinary/image/upload/c_scale,w_32/v1/logo/for_white_bg/cloudinary_icon_for_white_bg.svg" height="32" alt="Cloudinary" /><br/><b>Cloudinary</b></td>
     <td align="center"><img src="https://raw.githubusercontent.com/TanStack/table/main/media/repo-header.png" height="32" alt="TanStack Table" /><br/><b>TanStack Table</b></td>
-    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" height="32" alt="SQLite" /><br/><b>SQLite</b></td>
+    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" height="32" alt="Prisma" /><br/><b>Prisma</b></td>
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" height="32" alt="Docker" /><br/><b>Docker</b></td>
   </tr>
 </table>
