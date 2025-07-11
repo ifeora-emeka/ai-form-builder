@@ -8,7 +8,9 @@
     "build": "next build && cd server && npm run build",
     "start:next": "next start",
     "start": "cd server && npm start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fly:deploy": "flyctl deploy",
+    "fly:launch": "flyctl launch"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
