@@ -16,7 +16,10 @@
 - 📱 <b>PWA Support</b> – Installable, offline-ready, and mobile-friendly
 - 🔄 <b>Background Sync</b> – Never lose your work, even offline
 - 🌙 <b>Dark Mode</b> – Beautiful in both light and dark themes
-- 📊 <b>Analytics Dashboard</b> – Track form submissions and user engagement
+- 📊 <b>Real-Time Analytics</b> – Live dashboard updates using Socket.io for instant insights
+- 📈 <b>Interactive Submissions Table</b> – View and manage form responses with TanStack Table
+- ☁️ <b>File Upload Support</b> – Seamless file handling powered by Cloudinary
+- 📚 <b>API Documentation</b> – Comprehensive API docs for easy integration
 - 📥 <b>CSV Export</b> – Export responses for further analysis
 
 ---
@@ -34,6 +37,9 @@
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" height="32" alt="NestJS" /><br/><b>NestJS</b></td>
   </tr>
   <tr>
+    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg" height="32" alt="Socket.io" /><br/><b>Socket.io</b></td>
+    <td align="center"><img src="https://res.cloudinary.com/cloudinary/image/upload/c_scale,w_32/v1/logo/for_white_bg/cloudinary_icon_for_white_bg.svg" height="32" alt="Cloudinary" /><br/><b>Cloudinary</b></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/TanStack/table/main/media/repo-header.png" height="32" alt="TanStack Table" /><br/><b>TanStack Table</b></td>
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" height="32" alt="SQLite" /><br/><b>SQLite</b></td>
     <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" height="32" alt="Docker" /><br/><b>Docker</b></td>
   </tr>
