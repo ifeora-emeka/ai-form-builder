@@ -4,7 +4,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-1',
     index: 0,
-    sectionItem: 'section-1',
+    formGroupID: 'section-1',
     type: 'rich-text',
     content: '# Welcome to the Survey!\nPlease answer the following questions honestly. Your feedback is valuable to us.',
     hidden: false,
@@ -12,7 +12,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-2',
     index: 1,
-    sectionItem: 'section-4',
+    formGroupID: 'section-4',
     type: 'image',
     content: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
     hidden: false,
@@ -20,7 +20,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-3',
     index: 2,
-    sectionItem: 'section-6',
+    formGroupID: 'section-6',
     type: 'divider',
     content: null,
     hidden: false,
@@ -28,7 +28,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-4',
     index: 3,
-    sectionItem: 'section-6',
+    formGroupID: 'section-6',
     type: 'plain-text',
     content: 'Thank you for participating in our survey! If you have any questions, contact us at support@example.com.',
     hidden: false,
@@ -36,7 +36,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-5',
     index: 4,
-    sectionItem: 'section-6',
+    formGroupID: 'section-6',
     type: 'video',
     content: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     hidden: false,
@@ -44,7 +44,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-6',
     index: 0,
-    sectionItem: 'section-7',
+    formGroupID: 'section-7',
     type: 'rich-text',
     content: '## About You\nTell us a bit about yourself.',
     hidden: false,
@@ -52,7 +52,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-7',
     index: 1,
-    sectionItem: 'section-8',
+    formGroupID: 'section-8',
     type: 'image',
     content: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
     hidden: false,
@@ -60,7 +60,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-8',
     index: 2,
-    sectionItem: 'section-9',
+    formGroupID: 'section-9',
     type: 'divider',
     content: null,
     hidden: false,
@@ -68,7 +68,7 @@ export const mockElements: FormElement[] = [
   {
     id: 'element-9',
     index: 4,
-    sectionItem: 'section-11',
+    formGroupID: 'section-11',
     type: 'plain-text',
     content: 'We appreciate your time and effort in completing this section.',
     hidden: false,

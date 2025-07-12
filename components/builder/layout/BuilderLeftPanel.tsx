@@ -3,16 +3,20 @@ import {Input} from "@/components/ui/input";
 import {ScrollArea} from "@/components/ui/scroll-area"
 import React from "react";
 import {
-    HiPhoto,
     HiOutlineDocumentText,
     HiOutlineMinus,
     HiOutlinePencil,
     HiOutlineCheck,
     HiOutlinePlay,
-    HiOutlineInboxArrowDown,
+    HiOutlineChevronDown,
+    HiOutlineCalendar,
     HiSparkles,
-    HiMagnifyingGlass
+    HiMagnifyingGlass  
 } from "react-icons/hi2";
+import { RxText } from "react-icons/rx";
+import { FaRegFileAlt } from 'react-icons/fa';
+import { MdOutlineRadioButtonChecked } from 'react-icons/md';
+import { RiFileUploadLine } from 'react-icons/ri';
 
 
 export default function BuilderLeftPanel() {
@@ -21,34 +25,28 @@ export default function BuilderLeftPanel() {
         {
             label: 'Elements',
             items: [
-                { label: 'Images', icon: HiPhoto },
-                { label: 'Rich text', icon: HiOutlineDocumentText },
-                { label: 'Plain text', icon: HiOutlinePencil },
-                { label: 'Divider', icon: HiOutlineMinus },
-                { label: 'Section', icon: HiOutlineDocumentText },
-                { label: 'Button', icon: HiOutlineCheck },
-                { label: 'Video', icon: HiOutlinePlay },
+                { label: 'Image', slug: 'image', icon: RxText, kind: 'element' },
+                { label: 'Rich text', slug: 'rich-text', icon: HiOutlineDocumentText, kind: 'element' },
+                { label: 'Plain text', slug: 'plain-text', icon: FaRegFileAlt, kind: 'element' },
+                { label: 'Divider', slug: 'divider', icon: HiOutlineMinus, kind: 'element' },
+                { label: 'Video', slug: 'video', icon: HiOutlinePlay, kind: 'element' },
             ]
         },
         {
             label: 'Form fields',
             items: [
-                { label: 'Short text', icon: HiOutlineDocumentText },
-                { label: 'Long text', icon: HiOutlinePencil },
-                { label: 'Checkbox', icon: HiOutlineCheck },
-                { label: 'File upload', icon: HiOutlineInboxArrowDown },
-                { label: 'Dropdown', icon: HiOutlineDocumentText },
-                { label: 'Radio group', icon: HiOutlineCheck },
-                { label: 'Date picker', icon: HiOutlineDocumentText },
-                { label: 'Number', icon: HiOutlinePencil },
-                { label: 'Email', icon: HiOutlineDocumentText },
-                { label: 'Phone', icon: HiOutlineDocumentText },
-                { label: 'URL', icon: HiOutlineDocumentText },
+                { label: 'Short text', slug: 'short-text', icon: HiOutlineDocumentText, kind: 'field' },
+                { label: 'Paragraph', slug: 'long-text', icon: HiOutlinePencil, kind: 'field' },
+                { label: 'Number input', slug: 'number-input', icon: HiOutlineChevronDown, kind: 'field' },
+                { label: 'Checkbox', slug: 'checkbox', icon: HiOutlineCheck, kind: 'field' },
+                { label: 'File attachment', slug: 'file-attachment', icon: RiFileUploadLine, kind: 'field' },
+                { label: 'Dropdown', slug: 'dropdown', icon: HiOutlineChevronDown, kind: 'field' },
+                { label: 'Radio group', slug: 'radio-group', icon: MdOutlineRadioButtonChecked, kind: 'field' },
+                { label: 'Date picker', slug: 'date-picker', icon: HiOutlineCalendar, kind: 'field' },
             ]
         }
     ];
 
-    // Filter logic
     const filteredSections = leftPanelSections.map(section => ({
         ...section,
         items: section.items.filter(item =>
@@ -83,7 +81,7 @@ export default function BuilderLeftPanel() {
                         filteredSections.map(section => (
                             <EachSection key={section.label} label={section.label}>
                                 {section.items.map(item => (
-                                    <EachItem key={item.label} label={item.label} icon={item.icon} />
+                                    <EachItem key={item.label} label={item.label} icon={item.icon} slug={item.slug} kind={item.kind as 'element' | 'field'} />
                                 ))}
                             </EachSection>
                         ))
@@ -94,16 +92,22 @@ export default function BuilderLeftPanel() {
     </>
 }
 
-const EachItem = ({label, icon: Icon}: { label: string; icon: React.ElementType }) => {
+const EachItem = ({label, icon: Icon, slug, kind}: { label: string; icon: React.ElementType; slug: string; kind: 'element' | 'field' }) => {
+    function handleDragStart(e: React.DragEvent) {
+        e.dataTransfer.effectAllowed = 'copy';
+        e.dataTransfer.setData('application/json', JSON.stringify({ type: slug, kind, fromPanel: true }));
+    }
     return (
-        <button
+        <div
             className={'hover:border-primary bg-card cursor-grab border rounded-md shadow-sm hover:shadow-md flex justify-start items-center p-2'}
+            draggable
+            onDragStart={handleDragStart}
         >
             <span className={'flex items-center'}>
                 <Icon className="mr-2 h-5 w-5"/>
                 {label}
             </span>
-        </button>
+        </div>
     );
 }
 

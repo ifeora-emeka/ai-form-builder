@@ -1,21 +1,23 @@
+
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as React from 'react';
+const { createContext, useContext, useState, useEffect } = React;
 import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
 import { mockSteps } from '@/__mock__/step.mock';
-import { mockSectionItems } from '@/__mock__/section.mock';
+import { mockformGroupIDs } from '@/__mock__/section.mock';
 import { mockFields } from '@/__mock__/fields.mock';
 import { mockElements } from '@/__mock__/element.mock';
 
 export type PreviewState = {
   steps: FormStep[];
-  sectionItems: FormGroupItem[];
+  formGroupIDs: FormGroupItem[];
   fields: FormField[];
   elements: FormElement[];
 };
 
 const defaultState: PreviewState = {
   steps: mockSteps,
-  sectionItems: mockSectionItems,
+  formGroupIDs: mockformGroupIDs,
   fields: mockFields,
   elements: mockElements,
 };
@@ -34,27 +36,26 @@ export const usePreviewContext = () => {
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<PreviewState>({
     steps: defaultState.steps,
-    sectionItems: defaultState.sectionItems,
+    formGroupIDs: defaultState.formGroupIDs,
     fields: defaultState.fields,
     elements: defaultState.elements,
   });
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      window.localStorage.setItem('previewState', JSON.stringify(state));
-    }
-  }, [state]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const storedState = window.localStorage.getItem('previewState');
     if (storedState) {
       setState(JSON.parse(storedState));
-    } else {
-      setState(defaultState);
     }
-  },[])
+    setHydrated(true);
+  }, []);
 
-  console.log('PreviewProvider initialized with state:', state);
+  useEffect(() => {
+    if (!hydrated) return;
+    if (process.env.NODE_ENV === 'development') {
+      window.localStorage.setItem('previewState', JSON.stringify(state));
+    }
+  }, [state, hydrated]);
 
   return (
     <PreviewContext.Provider value={{ state, setState }}>

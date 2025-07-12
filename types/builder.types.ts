@@ -24,8 +24,8 @@ export type SelectOption = {
 export type FormField = {
     id: string;
     index: number;
-    sectionItem: string;
-    type: 'short-text' | 'long-text' | 'checkbox' | 'file-upload' | 'dropdown' | 'radio-group' | 'date-picker';
+    formGroupID: string;
+    type: FormFieldType;
     label: string;
     info: string | null;
     required: boolean;
@@ -43,9 +43,12 @@ export type FormField = {
 export type FormElement = {
     id: string;
     index: number;
-    sectionItem: string; // form section item ID
+    formGroupID: string; // form section item ID
 
-    type: 'image' | 'rich-text' | 'plain-text' | 'divider' | 'video';
+    type: FormElementType;
     content: string | null;
     hidden: boolean;
 }
+
+export type FormElementType = 'image' | 'rich-text' | 'plain-text' | 'divider' | 'video'
+export type FormFieldType = 'short-text' | 'long-text' | 'checkbox' | 'file-upload' | 'dropdown' | 'radio-group' | 'date-picker';

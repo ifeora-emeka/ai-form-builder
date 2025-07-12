@@ -1,0 +1,128 @@
+
+'use client';
+import { usePreviewContext } from '@/context/preview.context'
+import { FormGroupItem, FormElementType, FormFieldType } from '@/types/builder.types'
+import { getFormElementData } from '@/components/builder/data/form-section.data'
+import { getFormFieldData } from '@/components/builder/data/form-field.data'
+import { generateRandomID } from '@/lib/random'
+
+export function usePreview() {
+    const { state, setState } = usePreviewContext()
+
+    function moveGroupItem(
+        fromStep: string,
+        toStep: string,
+        fromIndex: number,
+        toIndex: number
+    ) {
+        const items = [...state.formGroupIDs]
+        const moving = items.filter(
+            (item) => item.formStep === fromStep && item.index === fromIndex
+        )[0]
+        if (!moving) return
+        const filtered = items.filter((item) => item !== moving)
+        const updated = filtered.map((item) => {
+            if (item.formStep === fromStep && item.index > fromIndex) {
+                return { ...item, index: item.index - 1 }
+            }
+            if (item.formStep === toStep && item.index >= toIndex) {
+                return { ...item, index: item.index + 1 }
+            }
+            return item
+        })
+        moving.formStep = toStep
+        moving.index = toIndex
+        setState((prev) => ({
+            ...prev,
+            formGroupIDs: [...updated, moving],
+        }))
+    }
+
+    function reorderGroupItem(step: string, oldIndex: number, newIndex: number) {
+        const items = state.formGroupIDs
+            .filter((item) => item.formStep === step)
+            .sort((a, b) => a.index - b.index)
+        if (oldIndex === newIndex) return
+        const moving = items[oldIndex]
+        const rest = items.filter((_, i) => i !== oldIndex)
+        rest.splice(newIndex, 0, moving)
+        const updated = state.formGroupIDs.map((item) => {
+            if (item.formStep !== step) return item
+            const idx = rest.findIndex((i) => i.id === item.id)
+            return { ...item, index: idx }
+        })
+        setState((prev) => ({ ...prev, formGroupIDs: updated }))
+    }
+
+    function appendToPreview({
+        type,
+        stepId,
+        kind,
+        file,
+        index
+    }: {
+        type: FormElementType | FormFieldType,
+        stepId: string,
+        kind: 'element' | 'field',
+        file?: File,
+        index?: number
+    }) {
+        let newGroupItem: FormGroupItem, newElement: any, newField: any;
+        const groupIndex = typeof index === 'number' ? index : state.formGroupIDs.filter(i => i.formStep === stepId).length;
+        setState(prev => {
+            const items = prev.formGroupIDs.filter(item => item.formStep === stepId).sort((a, b) => a.index - b.index);
+            let updatedFormGroupIDs = [...prev.formGroupIDs];
+            if (kind === 'element') {
+                newElement = getFormElementData({ type: type as FormElementType, index: groupIndex, formGroupID: '' });
+                if (type === 'image' && file) {
+                    newElement.content = URL.createObjectURL(file);
+                }
+                newGroupItem = {
+                    id: generateRandomID(12),
+                    index: groupIndex,
+                    formStep: stepId,
+                    type: 'element',
+                    hidden: false,
+                    targetID: newElement.id
+                };
+                updatedFormGroupIDs = updatedFormGroupIDs.map(item => {
+                    if (item.formStep === stepId && item.index >= groupIndex) {
+                        return { ...item, index: item.index + 1 };
+                    }
+                    return item;
+                });
+                updatedFormGroupIDs.push(newGroupItem);
+                return {
+                    ...prev,
+                    formGroupIDs: updatedFormGroupIDs,
+                    elements: [...prev.elements, { ...newElement, index: groupIndex, formGroupID: newGroupItem.id }]
+                };
+            } else if (kind === 'field') {
+                newField = getFormFieldData({ type: type as FormFieldType, index: groupIndex, formGroupID: '' });
+                newGroupItem = {
+                    id: generateRandomID(12),
+                    index: groupIndex,
+                    formStep: stepId,
+                    type: 'field',
+                    hidden: false,
+                    targetID: newField.id
+                };
+                updatedFormGroupIDs = updatedFormGroupIDs.map(item => {
+                    if (item.formStep === stepId && item.index >= groupIndex) {
+                        return { ...item, index: item.index + 1 };
+                    }
+                    return item;
+                });
+                updatedFormGroupIDs.push(newGroupItem);
+                return {
+                    ...prev,
+                    formGroupIDs: updatedFormGroupIDs,
+                    fields: [...prev.fields, { ...newField, index: groupIndex, formGroupID: newGroupItem.id }]
+                };
+            }
+            return prev;
+        });
+    }
+
+    return { ...state, moveGroupItem, reorderGroupItem, appendToPreview }
+}

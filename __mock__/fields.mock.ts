@@ -6,7 +6,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-1',
     index: 0,
-    sectionItem: 'section-2',
+    formGroupID: 'section-2',
     type: 'short-text',
     label: 'What is your full name?',
     info: 'Please enter your legal name as it appears on your ID.',
@@ -20,7 +20,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-2',
     index: 1,
-    sectionItem: 'section-3',
+    formGroupID: 'section-3',
     type: 'dropdown',
     label: 'What is your age group?',
     info: null,
@@ -41,7 +41,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-3',
     index: 2,
-    sectionItem: 'section-5',
+    formGroupID: 'section-5',
     type: 'checkbox',
     label: 'Which of the following do you use regularly?',
     info: 'Select all that apply.',
@@ -60,7 +60,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-4',
     index: 3,
-    sectionItem: 'section-5',
+    formGroupID: 'section-5',
     type: 'radio-group',
     label: 'What is your preferred method of communication?',
     info: null,
@@ -78,7 +78,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-5',
     index: 4,
-    sectionItem: 'section-5',
+    formGroupID: 'section-5',
     type: 'date-picker',
     label: 'When is your birthday?',
     info: null,
@@ -92,7 +92,7 @@ export const mockFields: FormField[] = [
   {
     id: 'field-6',
     index: 3,
-    sectionItem: 'section-10',
+    formGroupID: 'section-10',
     type: 'short-text',
     label: 'What is your favorite hobby?',
     info: 'Share your favorite hobby or pastime.',
