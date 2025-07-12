@@ -25,7 +25,7 @@ const PreviewContext = createContext<{
   setState: React.Dispatch<React.SetStateAction<PreviewState>>;
 } | undefined>(undefined);
 
-export const usePreview = () => {
+export const usePreviewContext = () => {
   const ctx = useContext(PreviewContext);
   if (!ctx) throw new Error('usePreview must be used within a PreviewProvider');
   return ctx;

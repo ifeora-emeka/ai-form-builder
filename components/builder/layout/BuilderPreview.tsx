@@ -1,12 +1,12 @@
 'use client'
 
-import { usePreview } from "@/context/preview.context";
 import EachFormStepContainer from "@/components/builder/EachFormStepContainer";
 import EachFormGroup from "@/components/builder/EachFormGroup";
 import React, { useEffect } from "react";
+import { usePreviewContext } from "@/context/preview.context";
 
 export default function BuilderPreview() {
-    const { state: { steps, sectionItems, elements, fields } } = usePreview();
+    const { state: { steps, sectionItems, elements, fields } } = usePreviewContext();
     const [ready, setReady] = React.useState(false);
 
     useEffect(() => {
