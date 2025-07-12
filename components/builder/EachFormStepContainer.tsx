@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button";
-import {HiOutlineEye, HiOutlineEyeSlash, HiOutlineTrash, HiBars3, HiPencil} from "react-icons/hi2";
+import {HiOutlineEye, HiOutlineTrash, HiBars3, HiPencil} from "react-icons/hi2";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {FormStep} from "@/types/builder.types";
 

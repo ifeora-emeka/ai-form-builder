@@ -27,7 +27,7 @@ export default function BuilderPreview() {
                         key={step.id}
                         data={step}
                     >
-                        <div className="bg-card rounded-lg flex flex-col gap-6">
+                        <div className="bg-card rounded-lg flex flex-col gap-6 py-4 border">
                             {
                                 sectionItems
                                   .filter(item => item.formStep === step.id)
