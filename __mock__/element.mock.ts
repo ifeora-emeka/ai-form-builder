@@ -1,0 +1,44 @@
+import type { FormElement } from '@/types/builder.types';
+
+export const mockElements: FormElement[] = [
+  {
+    id: 'element-1',
+    index: 0,
+    sectionItem: 'section-1',
+    type: 'rich-text',
+    content: '# Welcome to the Survey!\nPlease answer the following questions honestly. Your feedback is valuable to us.',
+    hidden: false,
+  },
+  {
+    id: 'element-2',
+    index: 1,
+    sectionItem: 'section-4',
+    type: 'image',
+    content: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+    hidden: false,
+  },
+  {
+    id: 'element-3',
+    index: 2,
+    sectionItem: 'section-6',
+    type: 'divider',
+    content: null,
+    hidden: false,
+  },
+  {
+    id: 'element-4',
+    index: 3,
+    sectionItem: 'section-6',
+    type: 'plain-text',
+    content: 'Thank you for participating in our survey! If you have any questions, contact us at support@example.com.',
+    hidden: false,
+  },
+  {
+    id: 'element-5',
+    index: 4,
+    sectionItem: 'section-6',
+    type: 'video',
+    content: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    hidden: false,
+  },
+];
