@@ -5,25 +5,31 @@ export type FormStep = {
     hidden: boolean;
 }
 
-export type FormSectionItem = {
+export type FormGroupItem = {
     id: string;
     index: number;
     formStep: string; // for section ID
 
     type: 'element' | 'field';
     hidden: boolean;
+    targetID: string; 
 }
+
+
+export type SelectOption = {
+    label: string;
+    value: string;
+};
 
 export type FormField = {
     id: string;
     index: number;
-    sectionItem: string; // form section item ID
-
+    sectionItem: string;
     type: 'short-text' | 'long-text' | 'checkbox' | 'file-upload' | 'dropdown' | 'radio-group' | 'date-picker';
     label: string;
     info: string | null;
     required: boolean;
-    options: string[];
+    options: SelectOption[];
     placeholder: string | null;
     validation: {
         minLength: number | null;

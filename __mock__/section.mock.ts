@@ -1,12 +1,13 @@
-import type { FormSectionItem } from '@/types/builder.types';
+import type { FormGroupItem } from '@/types/builder.types';
 
-export const mockSectionItems: FormSectionItem[] = [
+export const mockSectionItems: FormGroupItem[] = [
   {
     id: 'section-1',
     index: 0,
     formStep: 'step-1',
     type: 'element',
     hidden: false,
+    targetID: 'element-1',
   },
   {
     id: 'section-2',
@@ -14,6 +15,7 @@ export const mockSectionItems: FormSectionItem[] = [
     formStep: 'step-1',
     type: 'field',
     hidden: false,
+    targetID: 'field-1',
   },
   {
     id: 'section-3',
@@ -21,6 +23,7 @@ export const mockSectionItems: FormSectionItem[] = [
     formStep: 'step-1',
     type: 'field',
     hidden: false,
+    targetID: 'field-2',
   },
   {
     id: 'section-4',
@@ -28,6 +31,7 @@ export const mockSectionItems: FormSectionItem[] = [
     formStep: 'step-1',
     type: 'element',
     hidden: false,
+    targetID: 'element-2',
   },
   {
     id: 'section-5',
@@ -35,6 +39,7 @@ export const mockSectionItems: FormSectionItem[] = [
     formStep: 'step-1',
     type: 'field',
     hidden: false,
+    targetID: 'field-3',
   },
   {
     id: 'section-6',
@@ -42,5 +47,46 @@ export const mockSectionItems: FormSectionItem[] = [
     formStep: 'step-1',
     type: 'element',
     hidden: false,
+    targetID: 'element-3',
+  },
+  {
+    id: 'section-7',
+    index: 0,
+    formStep: 'step-2',
+    type: 'element',
+    hidden: false,
+    targetID: 'element-6',
+  },
+  {
+    id: 'section-8',
+    index: 1,
+    formStep: 'step-2',
+    type: 'element',
+    hidden: false,
+    targetID: 'element-7',
+  },
+  {
+    id: 'section-9',
+    index: 2,
+    formStep: 'step-2',
+    type: 'element',
+    hidden: false,
+    targetID: 'element-8',
+  },
+  {
+    id: 'section-10',
+    index: 3,
+    formStep: 'step-2',
+    type: 'field',
+    hidden: false,
+    targetID: 'field-6',
+  },
+  {
+    id: 'section-11',
+    index: 4,
+    formStep: 'step-2',
+    type: 'element',
+    hidden: false,
+    targetID: 'element-9',
   },
 ];

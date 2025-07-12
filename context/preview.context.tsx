@@ -1,6 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { FormStep, FormSectionItem, FormField, FormElement } from '@/types/builder.types';
+import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
 import { mockSteps } from '@/__mock__/step.mock';
 import { mockSectionItems } from '@/__mock__/section.mock';
 import { mockFields } from '@/__mock__/fields.mock';
@@ -8,7 +8,7 @@ import { mockElements } from '@/__mock__/element.mock';
 
 export type PreviewState = {
   steps: FormStep[];
-  sectionItems: FormSectionItem[];
+  sectionItems: FormGroupItem[];
   fields: FormField[];
   elements: FormElement[];
 };
