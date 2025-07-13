@@ -12,10 +12,11 @@ export default function BuilderPreview() {
     const { steps, formGroupIDs, elements, fields, appendToPreview } = usePreview();
     const [dragOver, setDragOver] = React.useState<{stepId: string, index: number} | null>(null);
 
-    function handleDropStep(e: React.DragEvent, stepId: string, insertIndex: number) {
+    function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
         e.preventDefault();
         setDragOver(null);
         let data: any = null;
+        
         if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
             data = { type: 'image', kind: 'element', fromPanel: true, file };
@@ -27,18 +28,28 @@ export default function BuilderPreview() {
                 } catch {}
             }
         }
-        if (data) {
-            appendToPreview({ ...data, stepId, index: insertIndex });
+        
+        if (data && data.fromPanel) {
+            appendToPreview({ 
+                type: data.type, 
+                stepId, 
+                kind: data.kind, 
+                file: data.file,
+                index: insertIndex 
+            });
         }
     }
 
-    function handleDragOverStep(e: React.DragEvent, stepId: string, insertIndex: number) {
+    function handleDragOver(e: React.DragEvent, stepId: string, insertIndex: number) {
         e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
         setDragOver({ stepId, index: insertIndex });
     }
 
-    function handleDragLeaveStep(e: React.DragEvent) {
-        setDragOver(null);
+    function handleDragLeave(e: React.DragEvent) {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setDragOver(null);
+        }
     }
 
     return (
@@ -52,33 +63,63 @@ export default function BuilderPreview() {
                         .slice()
                         .sort((a, b) => a.index - b.index);
                     return (
-                        <div key={step.id} className="rounded-lg min-h-[80px]- flex flex-col">
+                        <div key={step.id} className="rounded-lg min-h-[80px] flex flex-col">
                             <EachFormStepContainer data={step}>
-                                <DropZone
-                                    isActive={dragOver?.stepId === step.id && dragOver.index === 0}
-                                    onDrop={e => handleDropStep(e, step.id, 0)}
-                                    onDragOver={e => handleDragOverStep(e, step.id, 0)}
-                                    onDragLeave={handleDragLeaveStep}
-                                />
                                 <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                                    <div className="bg-card rounded-lg flex flex-col gap-6 py-4 border">
+                                    <div 
+                                        className="bg-card rounded-lg flex flex-col py-4 border relative"
+                                        onDragLeave={handleDragLeave}
+                                    >
+                                        <div
+                                            className="min-h-[20px] relative"
+                                            onDrop={(e) => handleDrop(e, step.id, 0)}
+                                            onDragOver={(e) => handleDragOver(e, step.id, 0)}
+                                        >
+                                            {dragOver?.stepId === step.id && dragOver?.index === 0 && (
+                                                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 h-6 bg-blue-500/30 border border-blue-500 rounded-md shadow-md animate-pulse" />
+                                            )}
+                                        </div>
+                                        
                                         {items.map((groupData, idx) => {
                                             const targetData = groupData.type === 'element'
                                                 ? elements.find(el => el.id === groupData.targetID)
                                                 : fields.find(field => field.id === groupData.targetID);
                                             if (!targetData) return null;
+                                            
                                             return (
                                                 <React.Fragment key={groupData.id}>
-                                                    <EachFormGroup groupData={groupData} targetData={targetData} />
-                                                    <DropZone
-                                                        isActive={dragOver?.stepId === step.id && dragOver.index === idx + 1}
-                                                        onDrop={e => handleDropStep(e, step.id, idx + 1)}
-                                                        onDragOver={e => handleDragOverStep(e, step.id, idx + 1)}
-                                                        onDragLeave={handleDragLeaveStep}
-                                                    />
+                                                    <div className="px-4">
+                                                        <EachFormGroup
+                                                            groupData={groupData}
+                                                            targetData={targetData}
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div
+                                                        className="min-h-[20px] relative"
+                                                        onDrop={(e) => handleDrop(e, step.id, idx + 1)}
+                                                        onDragOver={(e) => handleDragOver(e, step.id, idx + 1)}
+                                                    >
+                                                        {dragOver?.stepId === step.id && dragOver?.index === (idx + 1) && (
+                                                            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 h-6 bg-blue-500/30 border border-blue-500 rounded-md shadow-md animate-pulse" />
+                                                        )}
+                                                    </div>
                                                 </React.Fragment>
                                             );
                                         })}
+                                        
+                                        {items.length === 0 && (
+                                            <div
+                                                className="min-h-[60px] mx-4 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm relative"
+                                                onDrop={(e) => handleDrop(e, step.id, 0)}
+                                                onDragOver={(e) => handleDragOver(e, step.id, 0)}
+                                            >
+                                                Drop elements here
+                                                {dragOver?.stepId === step.id && dragOver?.index === 0 && (
+                                                    <div className="absolute inset-2 border-2 border-blue-500 rounded-lg bg-blue-50/50 dark:bg-blue-950/50" />
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </SortableContext>
                             </EachFormStepContainer>
@@ -87,28 +128,5 @@ export default function BuilderPreview() {
                     );
                 })}
         </div>
-    );
-}
-
-function DropZone({ isActive, onDrop, onDragOver, onDragLeave }: {
-    isActive: boolean;
-    onDrop: (e: React.DragEvent) => void;
-    onDragOver: (e: React.DragEvent) => void;
-    onDragLeave: (e: React.DragEvent) => void;
-}) {
-    return (
-        <div
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-            style={{
-                minHeight: '16px',
-                background: isActive ? 'rgba(99,102,241,0.15)' : 'transparent',
-                border: isActive ? '2px dashed #6366f1' : '2px dashed transparent',
-                margin: '4px 0',
-                borderRadius: '6px',
-                transition: 'background 0.15s, border 0.15s',
-            }}
-        />
     );
 }

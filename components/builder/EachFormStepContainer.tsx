@@ -11,7 +11,7 @@ export default function EachFormStepContainer({
     data: FormStep
 }) {
     return (
-        <div className={'flex flex-col gap-2 rounded-lg'}>
+        <div className={'flex flex-col rounded-lg'}>
             <div className={'flex items-center gap-2 pt-2 min-h-9'}>
                 <TooltipProvider>
                     <Tooltip>
