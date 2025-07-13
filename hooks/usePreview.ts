@@ -15,7 +15,7 @@ export function usePreview() {
         fromIndex: number,
         toIndex: number
     ) {
-        const items = [...state.formGroupIDs]
+        const items = [...state.formGroups]
         const moving = items.filter(
             (item) => item.formStep === fromStep && item.index === fromIndex
         )[0]
@@ -34,24 +34,24 @@ export function usePreview() {
         moving.index = toIndex
         setState((prev) => ({
             ...prev,
-            formGroupIDs: [...updated, moving],
+            formGroups: [...updated, moving],
         }))
     }
 
     function reorderGroupItem(step: string, oldIndex: number, newIndex: number) {
-        const items = state.formGroupIDs
+        const items = state.formGroups
             .filter((item) => item.formStep === step)
             .sort((a, b) => a.index - b.index)
         if (oldIndex === newIndex) return
         const moving = items[oldIndex]
         const rest = items.filter((_, i) => i !== oldIndex)
         rest.splice(newIndex, 0, moving)
-        const updated = state.formGroupIDs.map((item) => {
+        const updated = state.formGroups.map((item) => {
             if (item.formStep !== step) return item
             const idx = rest.findIndex((i) => i.id === item.id)
             return { ...item, index: idx }
         })
-        setState((prev) => ({ ...prev, formGroupIDs: updated }))
+        setState((prev) => ({ ...prev, formGroups: updated }))
     }
 
     function appendToPreview({
@@ -68,10 +68,10 @@ export function usePreview() {
         index?: number
     }) {
         let newGroupItem: FormGroupItem, newElement: any, newField: any;
-        const groupIndex = typeof index === 'number' ? index : state.formGroupIDs.filter(i => i.formStep === stepId).length;
+        const groupIndex = typeof index === 'number' ? index : state.formGroups.filter(i => i.formStep === stepId).length;
         setState(prev => {
-            const items = prev.formGroupIDs.filter(item => item.formStep === stepId).sort((a, b) => a.index - b.index);
-            let updatedFormGroupIDs = [...prev.formGroupIDs];
+            const items = prev.formGroups.filter(item => item.formStep === stepId).sort((a, b) => a.index - b.index);
+            let updatedformGroups = [...prev.formGroups];
             if (kind === 'element') {
                 newElement = getFormElementData({ type: type as FormElementType, index: groupIndex, formGroupID: '' });
                 if (type === 'image' && file) {
@@ -85,16 +85,16 @@ export function usePreview() {
                     hidden: false,
                     targetID: newElement.id
                 };
-                updatedFormGroupIDs = updatedFormGroupIDs.map(item => {
+                updatedformGroups = updatedformGroups.map(item => {
                     if (item.formStep === stepId && item.index >= groupIndex) {
                         return { ...item, index: item.index + 1 };
                     }
                     return item;
                 });
-                updatedFormGroupIDs.push(newGroupItem);
+                updatedformGroups.push(newGroupItem);
                 return {
                     ...prev,
-                    formGroupIDs: updatedFormGroupIDs,
+                    formGroups: updatedformGroups,
                     elements: [...prev.elements, { ...newElement, index: groupIndex, formGroupID: newGroupItem.id }]
                 };
             } else if (kind === 'field') {
@@ -107,16 +107,16 @@ export function usePreview() {
                     hidden: false,
                     targetID: newField.id
                 };
-                updatedFormGroupIDs = updatedFormGroupIDs.map(item => {
+                updatedformGroups = updatedformGroups.map(item => {
                     if (item.formStep === stepId && item.index >= groupIndex) {
                         return { ...item, index: item.index + 1 };
                     }
                     return item;
                 });
-                updatedFormGroupIDs.push(newGroupItem);
+                updatedformGroups.push(newGroupItem);
                 return {
                     ...prev,
-                    formGroupIDs: updatedFormGroupIDs,
+                    formGroups: updatedformGroups,
                     fields: [...prev.fields, { ...newField, index: groupIndex, formGroupID: newGroupItem.id }]
                 };
             }

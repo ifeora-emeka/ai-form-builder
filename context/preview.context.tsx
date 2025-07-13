@@ -4,20 +4,20 @@ import * as React from 'react';
 const { createContext, useContext, useState, useEffect } = React;
 import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
 import { mockSteps } from '@/__mock__/step.mock';
-import { mockformGroupIDs } from '@/__mock__/section.mock';
+import { mockformGroups } from '@/__mock__/section.mock';
 import { mockFields } from '@/__mock__/fields.mock';
 import { mockElements } from '@/__mock__/element.mock';
 
 export type PreviewState = {
   steps: FormStep[];
-  formGroupIDs: FormGroupItem[];
+  formGroups: FormGroupItem[];
   fields: FormField[];
   elements: FormElement[];
 };
 
 const defaultState: PreviewState = {
   steps: mockSteps,
-  formGroupIDs: mockformGroupIDs,
+  formGroups: mockformGroups,
   fields: mockFields,
   elements: mockElements,
 };
@@ -36,7 +36,7 @@ export const usePreviewContext = () => {
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<PreviewState>({
     steps: defaultState.steps,
-    formGroupIDs: defaultState.formGroupIDs,
+    formGroups: defaultState.formGroups,
     fields: defaultState.fields,
     elements: defaultState.elements,
   });

@@ -10,7 +10,7 @@ export default function FormBuilder() {
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
     );
-    const { steps, formGroupIDs, moveGroupItem, reorderGroupItem, appendToPreview } = usePreview();
+    const { steps, formGroups, moveGroupItem, reorderGroupItem, appendToPreview } = usePreview();
     const [ready, setReady] = React.useState(false);
 
     React.useEffect(() => {
@@ -33,14 +33,14 @@ export default function FormBuilder() {
         if (!over || !active) return;
         if (active.data?.current?.fromPanel) {
             const { type, kind, file } = active.data.current;
-            const stepId = over.data?.current?.stepId || formGroupIDs.find(i => i.id === over.id)?.formStep || steps[0]?.id;
+            const stepId = over.data?.current?.stepId || formGroups.find(i => i.id === over.id)?.formStep || steps[0]?.id;
             appendToPreview({ type, stepId, kind, file });
             return;
         }
         const activeId = active.id as string;
         const overId = over.id as string;
-        const activeItem = formGroupIDs.find(i => i.id === activeId);
-        const overItem = formGroupIDs.find(i => i.id === overId);
+        const activeItem = formGroups.find(i => i.id === activeId);
+        const overItem = formGroups.find(i => i.id === overId);
         if (!activeItem || !overItem) return;
         if (activeItem.formStep === overItem.formStep) {
             if (activeItem.index !== overItem.index) {

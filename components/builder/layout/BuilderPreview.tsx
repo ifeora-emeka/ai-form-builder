@@ -9,14 +9,14 @@ import AddFormStep from "@/components/AddFormStep";
 
 
 export default function BuilderPreview() {
-    const { steps, formGroupIDs, elements, fields, appendToPreview } = usePreview();
-    const [dragOver, setDragOver] = React.useState<{stepId: string, index: number} | null>(null);
+    const { steps, formGroups, elements, fields, appendToPreview } = usePreview();
+    const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
         e.preventDefault();
         setDragOver(null);
         let data: any = null;
-        
+
         if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
             data = { type: 'image', kind: 'element', fromPanel: true, file };
@@ -25,17 +25,17 @@ export default function BuilderPreview() {
             if (dataStr) {
                 try {
                     data = JSON.parse(dataStr);
-                } catch {}
+                } catch { }
             }
         }
-        
+
         if (data && data.fromPanel) {
-            appendToPreview({ 
-                type: data.type, 
-                stepId, 
-                kind: data.kind, 
+            appendToPreview({
+                type: data.type,
+                stepId,
+                kind: data.kind,
                 file: data.file,
-                index: insertIndex 
+                index: insertIndex
             });
         }
     }
@@ -58,7 +58,7 @@ export default function BuilderPreview() {
                 .slice()
                 .sort((a, b) => a.index - b.index)
                 .map((step) => {
-                    const items = formGroupIDs
+                    const items = formGroups
                         .filter(item => item.formStep === step.id)
                         .slice()
                         .sort((a, b) => a.index - b.index);
@@ -66,7 +66,7 @@ export default function BuilderPreview() {
                         <div key={step.id} className="rounded-lg min-h-[80px] flex flex-col">
                             <EachFormStepContainer data={step}>
                                 <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                                    <div 
+                                    <div
                                         className="bg-card rounded-lg flex flex-col py-4 border relative"
                                         onDragLeave={handleDragLeave}
                                     >
@@ -79,22 +79,20 @@ export default function BuilderPreview() {
                                                 <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 h-6 bg-blue-500/30 border border-blue-500 rounded-md shadow-md animate-pulse" />
                                             )}
                                         </div>
-                                        
+
                                         {items.map((groupData, idx) => {
                                             const targetData = groupData.type === 'element'
                                                 ? elements.find(el => el.id === groupData.targetID)
                                                 : fields.find(field => field.id === groupData.targetID);
                                             if (!targetData) return null;
-                                            
+
                                             return (
                                                 <React.Fragment key={groupData.id}>
-                                                    <div className="px-4">
-                                                        <EachFormGroup
-                                                            groupData={groupData}
-                                                            targetData={targetData}
-                                                        />
-                                                    </div>
-                                                    
+                                                    <EachFormGroup
+                                                        groupData={groupData}
+                                                        targetData={targetData}
+                                                    />
+
                                                     <div
                                                         className="min-h-[20px] relative"
                                                         onDrop={(e) => handleDrop(e, step.id, idx + 1)}
@@ -107,7 +105,7 @@ export default function BuilderPreview() {
                                                 </React.Fragment>
                                             );
                                         })}
-                                        
+
                                         {items.length === 0 && (
                                             <div
                                                 className="min-h-[60px] mx-4 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm relative"

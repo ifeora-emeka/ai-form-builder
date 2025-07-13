@@ -1,6 +1,6 @@
 import type { FormGroupItem } from '@/types/builder.types';
 
-export const mockformGroupIDs: FormGroupItem[] = [
+export const mockformGroups: FormGroupItem[] = [
   {
     id: 'section-1',
     index: 0,
