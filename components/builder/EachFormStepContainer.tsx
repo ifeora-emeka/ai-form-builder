@@ -1,7 +1,9 @@
-import {Button} from "@/components/ui/button";
-import {HiOutlineEye, HiOutlineTrash, HiBars3, HiPencil} from "react-icons/hi2";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {FormStep} from "@/types/builder.types";
+import { Button } from "@/components/ui/button";
+import { HiOutlineEye, HiOutlineTrash, HiBars3 } from "react-icons/hi2";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FormStep } from "@/types/builder.types";
+import { useEffect, useRef, useState } from "react";
+import AutowidthInput from "react-autowidth-input";
 
 export default function EachFormStepContainer({
     children,
@@ -10,6 +12,22 @@ export default function EachFormStepContainer({
     children: React.ReactNode;
     data: FormStep
 }) {
+    const [formStepName, setFormStepName] = useState(data.name || '');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormStepName(e.target.value);
+    }
+
+    const handleBlur = () => {
+        if(formStepName.trim() === '') return setFormStepName(data.name || 'Untitled Step');
+    }
+
+
+    useEffect(() => {
+        setFormStepName(data.name || 'Untitled Step');
+    }, [data.name]);
+
     return (
         <div className={'flex flex-col rounded-lg'}>
             <div className={'flex items-center gap-2 pt-2 min-h-9'}>
@@ -17,18 +35,26 @@ export default function EachFormStepContainer({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button size={'icon'} variant={'ghost'} aria-label="Drag step">
-                                <HiBars3/>
+                                <HiBars3 />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>Drag</TooltipContent>
                     </Tooltip>
-                    <span className="font-semibold text-lg flex-1 select-none ml-1">
-                        {data.name || 'Untitled Step'}
-                    </span>
+                    <div className="flex-1 flex items-center gap-2 justify-start">
+                        <AutowidthInput
+                            className="font-semibold text-lg select-none p-0 outline-none border-b focus:border-primary border-background cursor-default focus:cursor-text"
+                            value={formStepName}
+                            onChange={handleNameChange}
+                            autoFocus
+                            ref={inputRef}
+                            onFocus={() => inputRef.current?.select()}
+                            onBlur={handleBlur}
+                        />
+                    </div>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button size={'icon'} variant={'ghost'} aria-label="Show/hide step">
-                                <HiOutlineEye/>
+                                <HiOutlineEye />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>Show/Hide</TooltipContent>
@@ -36,7 +62,7 @@ export default function EachFormStepContainer({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button size={'icon'} variant={'ghost'} aria-label="Delete step">
-                                <HiOutlineTrash/>
+                                <HiOutlineTrash />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>Delete</TooltipContent>

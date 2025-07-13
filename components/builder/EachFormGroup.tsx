@@ -32,7 +32,7 @@ export default function EachFormGroup({
         </small>
         <div className="flex gap-2 hover:outline-1 outline-purple-500 px-9 py-2 pl-0">
           <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity" id="drag-handle" {...attributes} {...listeners}>
-            <button aria-label="Drag field" className="px-2 flex items-center justify-center rounded-full transition-colors">
+            <button aria-label="Drag field" className="px-2 flex items-center justify-center rounded-full transition-colors cursor-grab">
               <HiBars3 />
             </button>
           </div>

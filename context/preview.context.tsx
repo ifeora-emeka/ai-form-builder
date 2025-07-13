@@ -1,4 +1,3 @@
-
 'use client';
 import * as React from 'react';
 const { createContext, useContext, useState, useEffect } = React;
@@ -7,6 +6,7 @@ import { mockSteps } from '@/__mock__/step.mock';
 import { mockformGroups } from '@/__mock__/section.mock';
 import { mockFields } from '@/__mock__/fields.mock';
 import { mockElements } from '@/__mock__/element.mock';
+import { debounce } from 'lodash';
 
 export type PreviewState = {
   steps: FormStep[];
@@ -24,6 +24,7 @@ const defaultState: PreviewState = {
 
 const PreviewContext = createContext<{
   state: PreviewState;
+  updatePreviewContext: (updates: Partial<PreviewState>) => void;
   setState: React.Dispatch<React.SetStateAction<PreviewState>>;
 } | undefined>(undefined);
 
@@ -57,8 +58,12 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
     }
   }, [state, hydrated]);
 
+  const updatePreviewContext = debounce((updates: Partial<PreviewState>) => {
+    setState((prevState) => ({ ...prevState, ...updates }));
+  }, 300);
+
   return (
-    <PreviewContext.Provider value={{ state, setState }}>
+    <PreviewContext.Provider value={{ state, updatePreviewContext, setState }}>
       {children}
     </PreviewContext.Provider>
   );
