@@ -67,7 +67,7 @@ export default function BuilderPreview() {
                             <EachFormStepContainer data={step}>
                                 <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                     <div
-                                        className="bg-card rounded-lg flex flex-col py-4 border relative"
+                                        className="bg-card rounded-lg flex flex-col py-3 border relative"
                                         onDragLeave={handleDragLeave}
                                     >
                                         <div

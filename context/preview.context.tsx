@@ -62,6 +62,9 @@ export type PreviewState = {
   formGroups: FormGroupItem[];
   fields: FormField[];
   elements: FormElement[];
+};
+
+type ActiveState = {
   activeFormSection: string | null;
   activeFormGroup: string | null;
 };
@@ -71,10 +74,7 @@ const defaultState: PreviewState = {
   formGroups: mockformGroups,
   fields: mockFields,
   elements: mockElements,
-  activeFormSection: null,
-  activeFormGroup: null,
 };
-
 
 type PreviewContextType = {
   state: PreviewState;
@@ -85,6 +85,8 @@ type PreviewContextType = {
   canUndo: boolean;
   canRedo: boolean;
   setActiveFormGroup: (formGroupId: string) => void;
+  activeFormGroup: string | null;
+  activeFormSection: string | null;
 };
 
 const PreviewContext = createContext<PreviewContextType | undefined>(undefined);
@@ -100,19 +102,19 @@ export const usePreviewContext = () => {
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
   const history = useHistoryState<PreviewState>(defaultState);
   const { state, setState, undo, redo, canUndo, canRedo } = history;
+  const [active, setActive] = React.useState<ActiveState>({ activeFormGroup: null, activeFormSection: null });
   const updatePreviewContext = (updates: Partial<PreviewState>) => {
     setState((prev: PreviewState) => ({ ...prev, ...updates }));
   };
   const setActiveFormGroup = (formGroupId: string) => {
     const group = state.formGroups.find(g => g.id === formGroupId);
-    setState((prev: PreviewState) => ({
-      ...prev,
+    setActive({
       activeFormGroup: formGroupId,
       activeFormSection: group ? group.formStep : null
-    }));
+    });
   };
   return (
-    <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo, setActiveFormGroup }}>
+    <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup: active.activeFormGroup, activeFormSection: active.activeFormSection }}>
       {children}
     </PreviewContext.Provider>
   );

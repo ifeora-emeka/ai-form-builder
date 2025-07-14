@@ -65,7 +65,7 @@ export default function FormBuilder() {
         <BuilderLeftPanel />
         <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
             <BuilderHeader />
-            <main className="h-[calc(100vh-3rem)] overflow-y-auto">
+            <main className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
                     <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center">
                         <BuilderPreview />
