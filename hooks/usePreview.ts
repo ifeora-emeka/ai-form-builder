@@ -7,7 +7,8 @@ import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
 
 export function usePreview() {
-    const { state, setState } = usePreviewContext()
+    const ctx = usePreviewContext();
+    const { state, setState, undo, redo, canUndo, canRedo } = ctx;
 
     function moveFormGroupItem(
         fromStep: string,
@@ -83,7 +84,8 @@ export function usePreview() {
                     formStep: stepId,
                     type: 'element',
                     hidden: false,
-                    targetID: newElement.id
+                    targetID: newElement.id,
+                    deleted: false
                 };
                 updatedformGroups = updatedformGroups.map(item => {
                     if (item.formStep === stepId && item.index >= groupIndex) {
@@ -105,7 +107,8 @@ export function usePreview() {
                     formStep: stepId,
                     type: 'field',
                     hidden: false,
-                    targetID: newField.id
+                    targetID: newField.id,
+                    deleted: false
                 };
                 updatedformGroups = updatedformGroups.map(item => {
                     if (item.formStep === stepId && item.index >= groupIndex) {
@@ -138,6 +141,10 @@ export function usePreview() {
         moveFormGroupItem,
         reorderFormGroupItem,
         appendFormGroupToPreview,
-        updateFormStep
+        updateFormStep,
+        undo,
+        redo,
+        canUndo,
+        canRedo
     }
 }

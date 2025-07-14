@@ -1,12 +1,62 @@
 'use client';
-import * as React from 'react';
-const { createContext, useContext, useState, useEffect } = React;
+import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
+import {debounce} from 'lodash';
+
+function useHistoryState<T>(initial: T) {
+  const [history, setHistory] = useState<{
+    past: T[];
+    present: T;
+    future: T[];
+  }>({
+    past: [],
+    present: initial,
+    future: [],
+  });
+
+  const set = (newState: T | ((prev: T) => T), rewrite = false) => {
+    setHistory(h => {
+      const resolved = typeof newState === 'function' ? (newState as (prev: T) => T)(h.present) : newState;
+      return rewrite
+        ? { ...h, present: resolved }
+        : { past: [...h.past, h.present], present: resolved, future: [] };
+    });
+  };
+
+  const undo = () => setHistory(h => {
+    if (h.past.length === 0) return h;
+    const previous = h.past[h.past.length - 1];
+    return {
+      past: h.past.slice(0, -1),
+      present: previous,
+      future: [h.present, ...h.future],
+    };
+  });
+
+  const redo = () => setHistory(h => {
+    if (h.future.length === 0) return h;
+    const next = h.future[0];
+    return {
+      past: [...h.past, h.present],
+      present: next,
+      future: h.future.slice(1),
+    };
+  });
+
+  return {
+    state: history.present,
+    setState: set,
+    canUndo: history.past.length > 0,
+    canRedo: history.future.length > 0,
+    undo,
+    redo,
+  };
+}
 import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
 import { mockSteps } from '@/__mock__/step.mock';
 import { mockformGroups } from '@/__mock__/section.mock';
 import { mockFields } from '@/__mock__/fields.mock';
 import { mockElements } from '@/__mock__/element.mock';
-import { debounce } from 'lodash';
+
 
 export type PreviewState = {
   steps: FormStep[];
@@ -22,20 +72,36 @@ const defaultState: PreviewState = {
   elements: mockElements,
 };
 
-const PreviewContext = createContext<{
+
+type PreviewContextType = {
   state: PreviewState;
   updatePreviewContext: (updates: Partial<PreviewState>) => void;
-  setState: React.Dispatch<React.SetStateAction<PreviewState>>;
-} | undefined>(undefined);
+  setState: Dispatch<SetStateAction<PreviewState>>;
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+};
+
+const PreviewContext = createContext<PreviewContextType | undefined>(undefined);
+
 
 export const usePreviewContext = () => {
   const ctx = useContext(PreviewContext);
-  if (!ctx) throw new Error('usePreview must be used within a PreviewProvider');
+  if (!ctx) throw new Error('usePreviewContext must be used within a PreviewProvider');
   return ctx;
 };
 
+
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState<PreviewState>({
+  const {
+    state,
+    setState,
+    canUndo,
+    canRedo,
+    undo,
+    redo
+  } = useHistoryState<PreviewState>({
     steps: defaultState.steps,
     formGroups: defaultState.formGroups,
     fields: defaultState.fields,
@@ -44,28 +110,26 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const storedState = window.localStorage.getItem('previewState');
-    if (storedState) {
-      setState(JSON.parse(storedState));
+    if (!hydrated) {
+      const storedState = window.localStorage.getItem('previewState');
+      if (storedState) {
+        setState(JSON.parse(storedState), true);
+      }
+      setHydrated(true);
     }
-    setHydrated(true);
-  }, []);
+  }, [hydrated, setState]);
 
   useEffect(() => {
     if (!hydrated) return;
-    if (process.env.NODE_ENV === 'development') {
-      window.localStorage.setItem('previewState', JSON.stringify(state));
-    }
+    window.localStorage.setItem('previewState', JSON.stringify(state));
   }, [state, hydrated]);
 
   const updatePreviewContext = debounce((updates: Partial<PreviewState>) => {
-    setState((prevState) => ({ ...prevState, ...updates }));
+    setState((prev: PreviewState) => ({ ...prev, ...updates }));
   }, 300);
 
-  console.log('PreviewProvider state:', state);
-
   return (
-    <PreviewContext.Provider value={{ state, updatePreviewContext, setState }}>
+    <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo }}>
       {children}
     </PreviewContext.Provider>
   );
