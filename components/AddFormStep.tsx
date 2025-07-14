@@ -6,7 +6,7 @@ export default function AddFormStep() {
         <hr className='w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
         <Button size='sm' variant={'outline'} className="absolute self-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <HiMiniPlus />
-            <span className="text-sm">Add New Section</span>
+            <span className="text-sm">Add Section Here</span>
         </Button>
     </div>
 }

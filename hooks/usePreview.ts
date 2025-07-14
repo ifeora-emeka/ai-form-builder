@@ -1,7 +1,7 @@
 
 'use client';
 import { usePreviewContext } from '@/context/preview.context'
-import { FormGroupItem, FormElementType, FormFieldType } from '@/types/builder.types'
+import { FormGroupItem, FormElementType, FormFieldType, FormStep } from '@/types/builder.types'
 import { getFormElementData } from '@/components/builder/data/form-section.data'
 import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
@@ -9,7 +9,7 @@ import { generateRandomID } from '@/lib/random'
 export function usePreview() {
     const { state, setState } = usePreviewContext()
 
-    function moveGroupItem(
+    function moveFormGroupItem(
         fromStep: string,
         toStep: string,
         fromIndex: number,
@@ -38,7 +38,7 @@ export function usePreview() {
         }))
     }
 
-    function reorderGroupItem(step: string, oldIndex: number, newIndex: number) {
+    function reorderFormGroupItem(step: string, oldIndex: number, newIndex: number) {
         const items = state.formGroups
             .filter((item) => item.formStep === step)
             .sort((a, b) => a.index - b.index)
@@ -54,7 +54,7 @@ export function usePreview() {
         setState((prev) => ({ ...prev, formGroups: updated }))
     }
 
-    function appendToPreview({
+    function appendFormGroupToPreview({
         type,
         stepId,
         kind,
@@ -124,5 +124,20 @@ export function usePreview() {
         });
     }
 
-    return { ...state, moveGroupItem, reorderGroupItem, appendToPreview }
+    function updateFormStep(update: Partial<FormStep>, id: string) {
+        setState(prev => ({
+            ...prev,
+            steps: prev.steps.map(step =>
+                step.id === id ? { ...step, ...update } : step
+            )
+        }))
+    }
+
+    return {
+        ...state,
+        moveFormGroupItem,
+        reorderFormGroupItem,
+        appendFormGroupToPreview,
+        updateFormStep
+    }
 }

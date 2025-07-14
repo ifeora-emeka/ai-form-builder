@@ -9,7 +9,7 @@ import AddFormStep from "@/components/AddFormStep";
 
 
 export default function BuilderPreview() {
-    const { steps, formGroups, elements, fields, appendToPreview } = usePreview();
+    const { steps, formGroups, elements, fields, appendFormGroupToPreview } = usePreview();
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
@@ -30,7 +30,7 @@ export default function BuilderPreview() {
         }
 
         if (data && data.fromPanel) {
-            appendToPreview({
+            appendFormGroupToPreview({
                 type: data.type,
                 stepId,
                 kind: data.kind,
@@ -91,6 +91,7 @@ export default function BuilderPreview() {
                                                     <EachFormGroup
                                                         groupData={groupData}
                                                         targetData={targetData}
+                                                        stepHidden={step.hidden}
                                                     />
 
                                                     <div

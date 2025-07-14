@@ -10,7 +10,7 @@ export default function FormBuilder() {
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
     );
-    const { steps, formGroups, moveGroupItem, reorderGroupItem, appendToPreview } = usePreview();
+    const { steps, formGroups, moveFormGroupItem, reorderFormGroupItem, appendFormGroupToPreview } = usePreview();
     const [ready, setReady] = React.useState(false);
 
     React.useEffect(() => {
@@ -20,11 +20,11 @@ export default function FormBuilder() {
     React.useEffect(() => {
         function handleBuilderAppend(e: any) {
             const { type, stepId, kind, file } = e.detail;
-            appendToPreview({ type, stepId, kind, file });
+            appendFormGroupToPreview({ type, stepId, kind, file });
         }
         window.addEventListener('builder-append', handleBuilderAppend);
         return () => window.removeEventListener('builder-append', handleBuilderAppend);
-    }, [appendToPreview]);
+    }, [appendFormGroupToPreview]);
 
     if (!ready) return null;
 
@@ -34,7 +34,7 @@ export default function FormBuilder() {
         if (active.data?.current?.fromPanel) {
             const { type, kind, file } = active.data.current;
             const stepId = over.data?.current?.stepId || formGroups.find(i => i.id === over.id)?.formStep || steps[0]?.id;
-            appendToPreview({ type, stepId, kind, file });
+            appendFormGroupToPreview({ type, stepId, kind, file });
             return;
         }
         const activeId = active.id as string;
@@ -44,10 +44,10 @@ export default function FormBuilder() {
         if (!activeItem || !overItem) return;
         if (activeItem.formStep === overItem.formStep) {
             if (activeItem.index !== overItem.index) {
-                reorderGroupItem(activeItem.formStep, activeItem.index, overItem.index);
+                reorderFormGroupItem(activeItem.formStep, activeItem.index, overItem.index);
             }
         } else {
-            moveGroupItem(activeItem.formStep, overItem.formStep, activeItem.index, overItem.index);
+            moveFormGroupItem(activeItem.formStep, overItem.formStep, activeItem.index, overItem.index);
         }
     }
 
@@ -56,7 +56,7 @@ export default function FormBuilder() {
     function handleDrop(event: React.DragEvent) {
         if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
             const file = event.dataTransfer.files[0];
-            appendToPreview({ type: 'image', stepId: steps[0]?.id, kind: 'element', file });
+            appendFormGroupToPreview({ type: 'image', stepId: steps[0]?.id, kind: 'element', file });
         }
     }
 

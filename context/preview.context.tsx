@@ -62,6 +62,8 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
     setState((prevState) => ({ ...prevState, ...updates }));
   }, 300);
 
+  console.log('PreviewProvider state:', state);
+
   return (
     <PreviewContext.Provider value={{ state, updatePreviewContext, setState }}>
       {children}

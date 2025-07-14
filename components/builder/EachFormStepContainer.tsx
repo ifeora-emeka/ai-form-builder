@@ -1,9 +1,13 @@
+
 import { Button } from "@/components/ui/button";
-import { HiOutlineEye, HiOutlineTrash, HiBars3 } from "react-icons/hi2";
+import { HiOutlineEye, HiOutlineTrash, HiBars3, HiOutlineEyeSlash, HiChevronUp, HiChevronDown } from "react-icons/hi2";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { FormStep } from "@/types/builder.types";
 import { useEffect, useRef, useState } from "react";
 import AutowidthInput from "react-autowidth-input";
+import { usePreview } from '@/hooks/usePreview';
+import { cn } from "@/lib/utils";
+
 
 export default function EachFormStepContainer({
     children,
@@ -14,15 +18,25 @@ export default function EachFormStepContainer({
 }) {
     const [formStepName, setFormStepName] = useState(data.name || '');
     const inputRef = useRef<HTMLInputElement>(null);
+    const [collapsed, setCollapsed] = useState(false);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormStepName(e.target.value);
     }
 
+    const { updateFormStep } = usePreview();
     const handleBlur = () => {
-        if(formStepName.trim() === '') return setFormStepName(data.name || 'Untitled Step');
+        if (inputRef.current) {
+            inputRef.current.blur();
+        }
+        if (formStepName.trim() === '') {
+            setFormStepName(data.name || 'Untitled Step');
+            return;
+        }
+        if (formStepName !== data.name) {
+            updateFormStep({ name: formStepName }, data.id);
+        }
     }
-
 
     useEffect(() => {
         setFormStepName(data.name || 'Untitled Step');
@@ -34,30 +48,37 @@ export default function EachFormStepContainer({
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button size={'icon'} variant={'ghost'} aria-label="Drag step">
-                                <HiBars3 />
+                            <Button size={'icon'} variant={'ghost'} aria-label={collapsed ? "Expand step" : "Collapse step"} onClick={() => setCollapsed(!collapsed)}>
+                                {collapsed ? <HiChevronUp /> : <HiChevronDown />}
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Drag</TooltipContent>
+                        <TooltipContent>{collapsed ? "Expand step" : "Collapse step"}</TooltipContent>
                     </Tooltip>
                     <div className="flex-1 flex items-center gap-2 justify-start">
                         <AutowidthInput
-                            className="font-semibold text-lg select-none p-0 outline-none border-b focus:border-primary border-background cursor-default focus:cursor-text"
+                            className={cn("font-semibold text-lg select-none p-0 outline-none border-b focus:border-primary border-background cursor-default focus:cursor-text", { 'opacity-40 line-through': data.hidden })}
                             value={formStepName}
                             onChange={handleNameChange}
-                            autoFocus
                             ref={inputRef}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleBlur();
+                                }
+                            }}
                             onFocus={() => inputRef.current?.select()}
                             onBlur={handleBlur}
                         />
                     </div>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button size={'icon'} variant={'ghost'} aria-label="Show/hide step">
-                                <HiOutlineEye />
+                            <Button size={'icon'} variant={'ghost'} aria-label={collapsed ? "Expand step" : "Collapse step"} onClick={() => updateFormStep({ hidden: !data.hidden }, data.id)}>
+                                {
+                                    data.hidden ? <HiOutlineEye /> : <HiOutlineEyeSlash />
+                                }
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Show/Hide</TooltipContent>
+                        <TooltipContent>{collapsed ? "Expand step" : "Collapse step"}</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -69,7 +90,9 @@ export default function EachFormStepContainer({
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            {children}
+            <div className={cn("flex-1 transition-all duration-300", { "max-h-0 overflow-hidden": collapsed })}>
+                {children}
+            </div>
         </div>
     );
 }
