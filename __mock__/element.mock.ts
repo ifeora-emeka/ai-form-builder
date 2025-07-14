@@ -8,6 +8,7 @@ export const mockElements: FormElement[] = [
     type: 'rich-text',
     content: '# Welcome to the Survey!\nPlease answer the following questions honestly. Your feedback is valuable to us.',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-2',
@@ -16,6 +17,7 @@ export const mockElements: FormElement[] = [
     type: 'image',
     content: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-3',
@@ -24,6 +26,7 @@ export const mockElements: FormElement[] = [
     type: 'divider',
     content: null,
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-4',
@@ -32,6 +35,7 @@ export const mockElements: FormElement[] = [
     type: 'plain-text',
     content: 'Thank you for participating in our survey! If you have any questions, contact us at support@example.com.',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-5',
@@ -40,6 +44,7 @@ export const mockElements: FormElement[] = [
     type: 'video',
     content: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-6',
@@ -48,6 +53,7 @@ export const mockElements: FormElement[] = [
     type: 'rich-text',
     content: '## About You\nTell us a bit about yourself.',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-7',
@@ -56,6 +62,7 @@ export const mockElements: FormElement[] = [
     type: 'image',
     content: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-8',
@@ -64,6 +71,7 @@ export const mockElements: FormElement[] = [
     type: 'divider',
     content: null,
     hidden: false,
+    deleted: false,
   },
   {
     id: 'element-9',
@@ -72,5 +80,6 @@ export const mockElements: FormElement[] = [
     type: 'plain-text',
     content: 'We appreciate your time and effort in completing this section.',
     hidden: false,
+    deleted: false,
   },
 ];

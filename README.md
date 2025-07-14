@@ -10,7 +10,7 @@
 
 ## ✨ Features
 
-- ⚡ <b>Prompt-to-Form AI</b> – Instantly generate forms from natural language prompts
+- ↩️ <b>Undo and Redo</b> – Effortlessly revert or reapply changes while building your form
 - 🖱️ <b>Drag & Drop Builder</b> – Visually edit forms with a simple drag-and-drop interface
 - � <b>Form Customization</b> – Customize form colors, themes, and styling to match your brand
 - �🌐 <b>Server-Side Rendering</b> – Fast, SEO-friendly, and scalable

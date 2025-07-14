@@ -3,6 +3,7 @@ export type FormStep = {
     index: number;
     name: string | null;
     hidden: boolean;
+    deleted: boolean;
 }
 
 export type FormGroupItem = {
@@ -13,6 +14,7 @@ export type FormGroupItem = {
     type: 'element' | 'field';
     hidden: boolean;
     targetID: string; 
+    deleted: boolean;
 }
 
 
@@ -38,6 +40,7 @@ export type FormField = {
     };
     defaultValue: string | null;
     hidden: boolean;
+    deleted: boolean;
 }
 
 export type FormElement = {
@@ -48,6 +51,7 @@ export type FormElement = {
     type: FormElementType;
     content: string | null;
     hidden: boolean;
+    deleted: boolean;
 }
 
 export type FormElementType = 'image' | 'rich-text' | 'plain-text' | 'divider' | 'video'
