@@ -12,7 +12,7 @@ export default function BuilderHeader() {
     };
 
     return (
-        <header className={'h-12 min-h-12 border-b w-full bg-card z-40 flex items-center justify-between px-2 sticky top-0'}>
+        <header className={'h-12 min-h-12 border-b w-full z-40 flex items-center justify-between px-2 sticky top-0 bg-gradient-to-b from-card via-card to-muted/10'}>
             <div className={'flex gap-2 items-center'}>
                 <Button size={'sm'} variant={'ghost'}>
                     <HiBars3BottomLeft />

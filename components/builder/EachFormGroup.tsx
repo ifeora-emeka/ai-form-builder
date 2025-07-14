@@ -10,11 +10,15 @@ import { cn } from '@/lib/utils';
 export default function EachFormGroup({
   groupData,
   targetData,
-  stepHidden = false
+  stepHidden = false,
+  isActive,
+  onClick
 }: {
   groupData: FormGroupItem;
   targetData: FormElement | FormField;
   stepHidden?: boolean;
+  onClick?: (id: string) => void;
+  isActive?: boolean;
 }) {
   const isHidden = groupData.hidden || stepHidden;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -27,9 +31,16 @@ export default function EachFormGroup({
     zIndex: isDragging ? 50 : undefined,
   };
   return (
-    <div ref={setNodeRef} style={style} className="relative group select-none">
+    <div ref={setNodeRef} style={style} className="relative group select-none cursor-default" onClick={e => {
+      e.stopPropagation();
+      if (onClick && groupData.id) {
+        onClick(groupData.id);
+      }
+    }}>
       {
-        !isHidden && <small className="px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        !isHidden && isActive && <small className={cn("px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity", {
+          "opacity-100": isActive
+        })}>
           {groupData.type === 'element' ? 'Element' : 'Field'}
           <button aria-label="Delete group">
             <HiOutlineTrash />
@@ -37,7 +48,8 @@ export default function EachFormGroup({
         </small>
       }
       <div className={cn("flex gap-2 px-9 py-2 pl-0", {
-        'hover:outline-1 outline-secondary': !isHidden
+        'hover:outline-1 outline-secondary/30 hover:shadow-sm hover:outline-dashed': !isHidden,
+        'outline-1 outline-secondary hover:outline-solid': isActive
       })}>
         <div
           className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity"

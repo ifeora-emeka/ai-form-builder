@@ -9,7 +9,7 @@ import AddFormStep from "@/components/AddFormStep";
 
 
 export default function BuilderPreview() {
-    const { steps, formGroups, elements, fields, appendFormGroupToPreview } = usePreview();
+    const { steps, formGroups, elements, fields, appendFormGroupToPreview, setActiveFormGroup, activeFormGroup, activeFormSection } = usePreview();
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
@@ -53,7 +53,7 @@ export default function BuilderPreview() {
     }
 
     return (
-        <div className={'xl:w-[90%] 2xl:w-[900px] flex flex-col pt-10 pb-20'}>
+        <div className={'xl:w-[95%] w-full 2xl:w-[900px] flex flex-col pt-10 pb-20'}>
             {steps
                 .slice()
                 .sort((a, b) => a.index - b.index)
@@ -92,6 +92,10 @@ export default function BuilderPreview() {
                                                         groupData={groupData}
                                                         targetData={targetData}
                                                         stepHidden={step.hidden}
+                                                        isActive={activeFormGroup === groupData.id}
+                                                        onClick={(id) => {
+                                                            setActiveFormGroup(id);
+                                                        }}
                                                     />
 
                                                     <div

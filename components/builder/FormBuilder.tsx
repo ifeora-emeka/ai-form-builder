@@ -5,6 +5,7 @@ import BuilderPreview from "@/components/builder/layout/BuilderPreview";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { usePreview } from '@/hooks/usePreview';
 import React from 'react';
+import BuilderRightPanel from "./layout/BuilderRightPanel";
 
 export default function FormBuilder() {
     const sensors = useSensors(
@@ -51,7 +52,7 @@ export default function FormBuilder() {
         }
     }
 
-    function handleDragOver(event: any) {}
+    function handleDragOver(event: any) { }
 
     function handleDrop(event: React.DragEvent) {
         if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
@@ -61,15 +62,17 @@ export default function FormBuilder() {
     }
 
     return <div className={'bg-background min-h-screen flex'}>
-        <BuilderLeftPanel/>
-        <main className={'flex-1 h-screen flex flex-col items-center overflow-y-auto'}>
-            <BuilderHeader/>
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
-                <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center">
-                    <BuilderPreview/>
-                </div>
-            </DndContext>
-        </main>
-        <aside className={'w-[300px] h-screen bg-card border-l'}></aside>
+        <BuilderLeftPanel />
+        <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
+            <BuilderHeader />
+            <main className="h-[calc(100vh-3rem)] overflow-y-auto">
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
+                    <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center">
+                        <BuilderPreview />
+                    </div>
+                </DndContext>
+            </main>
+        </div>
+        <BuilderRightPanel />
     </div>
 }

@@ -8,7 +8,7 @@ import { generateRandomID } from '@/lib/random'
 
 export function usePreview() {
     const ctx = usePreviewContext();
-    const { state, setState, undo, redo, canUndo, canRedo } = ctx;
+    const { state, setState, undo, redo, canUndo, canRedo, setActiveFormGroup } = ctx;
 
     function moveFormGroupItem(
         fromStep: string,
@@ -145,6 +145,7 @@ export function usePreview() {
         undo,
         redo,
         canUndo,
-        canRedo
+        canRedo,
+        setActiveFormGroup
     }
 }

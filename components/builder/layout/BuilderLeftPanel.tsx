@@ -55,14 +55,14 @@ export default function BuilderLeftPanel() {
     })).filter(section => section.items.length > 0);
 
     return <>
-        <aside className={'w-[300px] h-screen bg-gradient-to-l from-card via-card to-muted/20 border-r select-none sticky top-0'}>
-            <div className={'h-12 border-b flex items-center px-2 bg-gradient-to-t from-card via-card to-muted/50'}>
+        <aside className={'w-[300px] h-screen border-r select-none sticky top-0'}>
+            <div className={'h-12 flex items-center px-2 bg-gradient-to-t from-card via-card to-muted/50'}>
                 <div className={'font-bold text-xl flex gap-2 items-center'}>
                     <Image width={30} height={30} src={'/logo.png'} alt='logo' />
                     <h1>FormAI</h1>
                 </div>
             </div>
-            <div className={'h-12 border-b- flex items-center px-2 relative bg-card-'}>
+            <div className={'h-12 border-b bg-card flex items-center px-2 relative bg-card-'}>
                 <span className="absolute left-4 text-muted-foreground">
                     <HiMagnifyingGlass className="h-5 w-5" />
                 </span>
@@ -73,7 +73,7 @@ export default function BuilderLeftPanel() {
                     className="pl-10"
                 />
             </div>
-            <ScrollArea className={' h-[calc(100vh-96px)] overflow-y-auto'}>
+            <ScrollArea className={' h-[calc(100vh-96px)] overflow-y-auto bg-gradient-to-l from-card via-card to-muted/20'}>
                 <div className={'space-y-10 px-2 pt-4 pb-20'}>
                     {filteredSections.length === 0 ? (
                         <div className="text-muted-foreground text-center py-8">No results found.</div>

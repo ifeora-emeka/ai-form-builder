@@ -1,6 +1,11 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 import {debounce} from 'lodash';
+import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
+import { mockSteps } from '@/__mock__/step.mock';
+import { mockformGroups } from '@/__mock__/section.mock';
+import { mockFields } from '@/__mock__/fields.mock';
+import { mockElements } from '@/__mock__/element.mock';
 
 function useHistoryState<T>(initial: T) {
   const [history, setHistory] = useState<{
@@ -51,18 +56,14 @@ function useHistoryState<T>(initial: T) {
     redo,
   };
 }
-import type { FormStep, FormGroupItem, FormField, FormElement } from '@/types/builder.types';
-import { mockSteps } from '@/__mock__/step.mock';
-import { mockformGroups } from '@/__mock__/section.mock';
-import { mockFields } from '@/__mock__/fields.mock';
-import { mockElements } from '@/__mock__/element.mock';
-
 
 export type PreviewState = {
   steps: FormStep[];
   formGroups: FormGroupItem[];
   fields: FormField[];
   elements: FormElement[];
+  activeFormSection: string | null;
+  activeFormGroup: string | null;
 };
 
 const defaultState: PreviewState = {
@@ -70,6 +71,8 @@ const defaultState: PreviewState = {
   formGroups: mockformGroups,
   fields: mockFields,
   elements: mockElements,
+  activeFormSection: null,
+  activeFormGroup: null,
 };
 
 
@@ -81,6 +84,7 @@ type PreviewContextType = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  setActiveFormGroup: (formGroupId: string) => void;
 };
 
 const PreviewContext = createContext<PreviewContextType | undefined>(undefined);
@@ -94,42 +98,21 @@ export const usePreviewContext = () => {
 
 
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
-  const {
-    state,
-    setState,
-    canUndo,
-    canRedo,
-    undo,
-    redo
-  } = useHistoryState<PreviewState>({
-    steps: defaultState.steps,
-    formGroups: defaultState.formGroups,
-    fields: defaultState.fields,
-    elements: defaultState.elements,
-  });
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    if (!hydrated) {
-      const storedState = window.localStorage.getItem('previewState');
-      if (storedState) {
-        setState(JSON.parse(storedState), true);
-      }
-      setHydrated(true);
-    }
-  }, [hydrated, setState]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    window.localStorage.setItem('previewState', JSON.stringify(state));
-  }, [state, hydrated]);
-
-  const updatePreviewContext = debounce((updates: Partial<PreviewState>) => {
+  const history = useHistoryState<PreviewState>(defaultState);
+  const { state, setState, undo, redo, canUndo, canRedo } = history;
+  const updatePreviewContext = (updates: Partial<PreviewState>) => {
     setState((prev: PreviewState) => ({ ...prev, ...updates }));
-  }, 300);
-
+  };
+  const setActiveFormGroup = (formGroupId: string) => {
+    const group = state.formGroups.find(g => g.id === formGroupId);
+    setState((prev: PreviewState) => ({
+      ...prev,
+      activeFormGroup: formGroupId,
+      activeFormSection: group ? group.formStep : null
+    }));
+  };
   return (
-    <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo }}>
+    <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo, setActiveFormGroup }}>
       {children}
     </PreviewContext.Provider>
   );
