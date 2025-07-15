@@ -1,7 +1,8 @@
+# <img src='./public/logo.png' width='40' /> FORM AI – An AI powered form builder
+
   <img src='./docs/image.png' />
   <hr/>
 
-# 📝 FORM AI – The AI Form Builder
 
 <h2 align="center">Build smarter forms, faster – with AI ✨</h2>
 
