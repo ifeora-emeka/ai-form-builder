@@ -5,23 +5,27 @@ import { CSS } from '@dnd-kit/utilities';
 import { FormElement, FormField, FormGroupItem } from "@/types/builder.types";
 import FormElementRenderer from "./FormElementRenderer";
 import FormFieldRenderer from "./FormFieldRenderer";
-import { HiBars3, HiOutlineTrash } from "react-icons/hi2";
+import { HiBars3, HiOutlineEye, HiOutlineEyeSlash, HiOutlineTrash } from "react-icons/hi2";
 import { cn } from '@/lib/utils';
 
 export default function EachFormGroup({
   groupData,
   targetData,
-  stepHidden = false,
+  isHidden,
   onClick,
-  isActive = false
+  isActive = false,
+  onDelete,
+  onHide
 }: {
   groupData: FormGroupItem;
   targetData: FormElement | FormField;
-  stepHidden?: boolean;
+  isHidden: boolean;
   isActive?: boolean;
   onClick: (id: string) => void;
+  onDelete: (groupID: string) => void;
+  onHide: (groupID: string) => void;
 }) {
-  const isHidden = groupData.hidden || stepHidden;
+  // console.log('HIDDEN::', isHidden)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: groupData.id
   });
@@ -41,12 +45,16 @@ export default function EachFormGroup({
       }}
     >
       {
-        !isHidden && isActive && <small className={cn("px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity", {
+        isActive && <small className={cn("px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity", {
           "opacity-100": isActive
         })}>
           {groupData.type === 'element' ? 'Element' : 'Field'}
-          <button aria-label="Delete group">
+          <button aria-label="Delete group" onClick={e => onDelete(groupData.id)}>
             <HiOutlineTrash />
+          </button>
+          <button aria-label="Delete group">
+            <HiOutlineEye />
+            <HiOutlineEyeSlash />
           </button>
         </small>
       }
@@ -64,7 +72,7 @@ export default function EachFormGroup({
             <HiBars3 />
           </button>
         </div>
-        <div className={cn('flex flex-col gap-2 flex-1', { "opacity-40": stepHidden })}>
+        <div className={cn('flex flex-col gap-2 flex-1', { "opacity-40": isHidden })}>
           {groupData.type === 'element' ? (
             <FormElementRenderer data={targetData as FormElement} />
           ) : (
@@ -72,7 +80,7 @@ export default function EachFormGroup({
               <div className="flex flex-col">
                 {'label' in targetData && (
                   <label className="font-semibold text-base mb-1">
-                    {targetData.label}
+                    {targetData.label} {targetData.required && <span className='text-destructive'>*</span>}
                   </label>
                 )}
                 {'info' in targetData && targetData.info && (<small className="text-muted-foreground">{targetData.info}</small>)}

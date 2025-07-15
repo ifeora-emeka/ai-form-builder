@@ -15,7 +15,7 @@ type Props = {
 }
 
 export default function FormFieldProperties({ formGroup }: Props) {
-    const { fields, updateFormField, deleteFormGroup } = usePreview();
+    const { fields, updateFormField, updateFormGroup, deleteFormGroup } = usePreview();
     const field = useMemo(() => fields.find(f => f.id === formGroup.targetID), [fields, formGroup.targetID]);
     const [label, setLabel] = useState(field?.label || '');
     const [info, setInfo] = useState(field?.info || '');
@@ -68,7 +68,7 @@ export default function FormFieldProperties({ formGroup }: Props) {
                 <hr />
                 <div className='grid grid-cols-3 gap-4'>
                     <div className="flex items-center gap-2">
-                        <Switch id="visible" checked={!field.hidden} onCheckedChange={v => updateFormField(field.id, { hidden: !v })} />
+                        <Switch id="visible" checked={!formGroup.hidden} onCheckedChange={v => updateFormGroup(formGroup.id, { hidden: !v })} />
                         <Label htmlFor="visible">Visible</Label>
                     </div>
                     <div className="flex items-center gap-2">

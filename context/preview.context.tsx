@@ -100,9 +100,25 @@ export const usePreviewContext = () => {
 
 
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
+  const [rehydrated, setRehydrated] = React.useState(false);
   const history = useHistoryState<PreviewState>(defaultState);
   const { state, setState, undo, redo, canUndo, canRedo } = history;
   const [active, setActive] = React.useState<ActiveState>({ activeFormGroup: null, activeFormSection: null });
+  React.useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('previewState') : null;
+    if (saved) {
+      try {
+        setState(JSON.parse(saved), true);
+      } catch {}
+    }
+    setRehydrated(true);
+    // eslint-disable-next-line
+  }, []);
+  React.useEffect(() => {
+    if (rehydrated) {
+      localStorage.setItem('previewState', JSON.stringify(state));
+    }
+  }, [state, rehydrated]);
   const updatePreviewContext = (updates: Partial<PreviewState>) => {
     setState((prev: PreviewState) => ({ ...prev, ...updates }));
   };
@@ -113,6 +129,7 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
       activeFormSection: group ? group.formStep : null
     });
   };
+  if (!rehydrated) return null;
   return (
     <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup: active.activeFormGroup, activeFormSection: active.activeFormSection }}>
       {children}

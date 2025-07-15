@@ -9,7 +9,18 @@ import AddFormStep from "@/components/AddFormStep";
 
 
 export default function BuilderPreview() {
-    const { steps, formGroups, elements, fields, appendFormGroupToPreview, setActiveFormGroup, activeFormGroup } = usePreview();
+    const {
+        steps,
+        formGroups,
+        elements,
+        fields,
+        appendFormGroupToPreview, setActiveFormGroup,
+        activeFormGroup,
+        updateFormGroup,
+        updateFormStep,
+        deleteFormGroup,
+        deleteFormStep
+    } = usePreview();
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
@@ -53,19 +64,27 @@ export default function BuilderPreview() {
     }
 
     return (
-        <div className={'xl:w-[640px] w-full 2xl:w-[640px] max-w-[900px] flex flex-col pt-10 pb-20'}>
-            {steps
+        <div className={'xl:w-[640px] w-full 2xl:w-[700px] max-w-[1000px] flex flex-col pt-10 pb-20'}>
+            {steps.filter(step => !step.deleted)
                 .slice()
                 .sort((a, b) => a.index - b.index)
                 .map((step) => {
-                    const items = formGroups
+                    const groups = formGroups
                         .filter(item => item.formStep === step.id)
                         .slice()
                         .sort((a, b) => a.index - b.index);
                     return (
                         <div key={step.id} className="rounded-lg min-h-[80px] flex flex-col">
-                            <EachFormStepContainer data={step}>
-                                <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                            <EachFormStepContainer
+                                updateFormStep={updateFormStep}
+                                data={step}
+                                onDelete={deleteFormStep}
+                                isHidden={step.hidden}
+                            >
+                                <SortableContext
+                                    items={groups.map(i => i.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
                                     <div
                                         className="bg-card rounded-lg flex flex-col py-3 border relative"
                                         onDragLeave={handleDragLeave}
@@ -80,7 +99,7 @@ export default function BuilderPreview() {
                                             )}
                                         </div>
 
-                                        {items.map((groupData, idx) => {
+                                        {groups.filter(item => !item.deleted).map((groupData, idx) => {
                                             const targetData = groupData.type === 'element'
                                                 ? elements.find(el => el.id === groupData.targetID)
                                                 : fields.find(field => field.id === groupData.targetID);
@@ -89,9 +108,13 @@ export default function BuilderPreview() {
                                             return (
                                                 <React.Fragment key={groupData.id}>
                                                     <EachFormGroup
+                                                        onHide={() => updateFormGroup(groupData.id, {
+                                                            hidden: !groupData.hidden
+                                                        })}
+                                                        onDelete={deleteFormGroup}
                                                         groupData={groupData}
                                                         targetData={targetData}
-                                                        stepHidden={step.hidden}
+                                                        isHidden={step.hidden || groupData.hidden}
                                                         isActive={activeFormGroup === groupData.id}
                                                         onClick={(id) => {
                                                             setActiveFormGroup(id);
@@ -111,7 +134,7 @@ export default function BuilderPreview() {
                                             );
                                         })}
 
-                                        {items.length === 0 && (
+                                        {groups.length === 0 && (
                                             <div
                                                 className="min-h-[60px] mx-4 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm relative"
                                                 onDrop={(e) => handleDrop(e, step.id, 0)}

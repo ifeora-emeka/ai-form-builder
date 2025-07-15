@@ -1,12 +1,11 @@
 import { HiMiniPlus } from "react-icons/hi2";
-import { Button } from "./ui/button";
 
 export default function AddFormStep() {
     return <div className="py-8 relative flex items-center justify-center group">
         <hr className='w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-        <Button size='sm' variant={'outline'} className="absolute self-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <button className="flex items-center gap-2 px-2 border rounded-lg absolute self-center bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-muted-foreground hover:text-foreground">
             <HiMiniPlus />
-            <span className="text-sm">Add Section Here</span>
-        </Button>
+            <small className="text-sm">Add Section Here</small>
+        </button>
     </div>
 }

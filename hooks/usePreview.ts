@@ -6,6 +6,12 @@ import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
 
 export function usePreview() {
+    function deleteFormStep(stepId: string) {
+        setState(prev => ({
+            ...prev,
+            steps: prev.steps.map(s => s.id === stepId ? { ...s, deleted: true } : s)
+        }));
+    }
     const ctx = usePreviewContext();
     const { state, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup, activeFormSection } = ctx;
 
@@ -38,12 +44,22 @@ export function usePreview() {
         }))
     }
 
+
     function updateFormField(fieldId: string, data: Partial<FormField>) {
         setState(prev => {
             const fields = prev.fields.map(f =>
                 f.id === fieldId ? { ...f, ...data } : f
             );
             return { ...prev, fields };
+        });
+    }
+
+    function updateFormGroup(formGroupId: string, data: Partial<FormGroupItem>) {
+        setState(prev => {
+            const formGroups = prev.formGroups.map(fg =>
+                fg.id === formGroupId ? { ...fg, ...data } : fg
+            );
+            return { ...prev, formGroups };
         });
     }
 
@@ -144,11 +160,11 @@ export function usePreview() {
         });
     }
 
-    function updateFormStep(update: Partial<FormStep>, id: string) {
+    function updateFormStep(id: string, data: Partial<FormStep>) {
         setState(prev => ({
             ...prev,
             steps: prev.steps.map(step =>
-                step.id === id ? { ...step, ...update } : step
+                step.id === id ? { ...step, ...data } : step
             )
         }))
     }
@@ -160,7 +176,9 @@ export function usePreview() {
         appendFormGroupToPreview,
         updateFormStep,
         updateFormField,
+        updateFormGroup,
         deleteFormGroup,
+        deleteFormStep,
         undo,
         redo,
         canUndo,
