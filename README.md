@@ -1,7 +1,7 @@
-<center>
-<img src='./public/logo.png' width='40' />
-<h1>Form AI</h1>
-</center>
+<p align="center">
+  <img src='./public/logo.png' width='40' /><br/>
+  <strong>FORM AI</strong>
+</p>
 
   <img src='./docs/image.png' />
   <hr/>
