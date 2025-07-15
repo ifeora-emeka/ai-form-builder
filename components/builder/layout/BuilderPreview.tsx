@@ -6,21 +6,40 @@ import React from "react";
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { usePreview } from '@/hooks/usePreview';
 import AddFormStep from "@/components/AddFormStep";
+import { FormElement, FormField, FormGroupItem, FormStep } from "@/types/builder.types";
 
 
-export default function BuilderPreview() {
-    const {
+export default function BuilderPreview(
+    {
         steps,
         formGroups,
         elements,
         fields,
-        appendFormGroupToPreview, setActiveFormGroup,
+        appendFormGroupToPreview,
+        setActiveFormGroup,
         activeFormGroup,
         updateFormGroup,
-        updateFormStep,
         deleteFormGroup,
-        deleteFormStep
-    } = usePreview();
+        updateFormStep,
+        deleteFormStep,
+        moveFormGroupItem,
+        reorderFormGroupItem
+    }:{
+        steps: FormStep[];
+        formGroups: FormGroupItem[];
+        elements: FormElement[];
+        fields: FormField[];
+        appendFormGroupToPreview: (data: { type: string, stepId: string, kind: string, file?: File, index?: number }) => void;
+        setActiveFormGroup: (formGroupId: string) => void;
+        activeFormGroup: string | null;
+        updateFormGroup: (id: string, data: Partial<FormGroupItem>) => void;
+        deleteFormGroup: (id: string) => void;
+        updateFormStep: (id: string, data: Partial<FormStep>) => void;
+        deleteFormStep: (stepId: string) => void;
+        moveFormGroupItem: (fromIndex: number, toIndex: number) => void;
+        reorderFormGroupItem: (fromIndex: number, toIndex: number) => void;
+    }
+) {
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {

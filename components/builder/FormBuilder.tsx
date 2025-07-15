@@ -11,7 +11,23 @@ export default function FormBuilder() {
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
     );
-    const { steps, formGroups, moveFormGroupItem, reorderFormGroupItem, appendFormGroupToPreview } = usePreview();
+
+    const {
+        steps,
+        formGroups,
+        elements,
+        fields,
+        appendFormGroupToPreview,
+        setActiveFormGroup,
+        activeFormGroup,
+        updateFormGroup,
+        updateFormStep,
+        deleteFormGroup,
+        deleteFormStep,
+        moveFormGroupItem,
+        reorderFormGroupItem,
+    } = usePreview();
+
     const [ready, setReady] = React.useState(false);
 
     React.useEffect(() => {
@@ -68,7 +84,31 @@ export default function FormBuilder() {
             <main className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
                     <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center">
-                        <BuilderPreview />
+                        <BuilderPreview
+                            steps={steps}
+                            formGroups={formGroups}
+                            elements={elements}
+                            fields={fields}
+                            appendFormGroupToPreview={(data) => {
+                                appendFormGroupToPreview({
+                                    ...data,
+                                    type: data.type as any,
+                                    kind: data.kind as 'element' | 'field',
+                                });
+                            }}
+                            setActiveFormGroup={setActiveFormGroup}
+                            activeFormGroup={activeFormGroup}
+                            updateFormGroup={updateFormGroup}
+                            deleteFormGroup={deleteFormGroup}
+                            updateFormStep={updateFormStep}
+                            deleteFormStep={deleteFormStep}
+                            moveFormGroupItem={(fromIndex, toIndex) => {
+                                moveFormGroupItem('', '', fromIndex, toIndex);
+                            }}
+                            reorderFormGroupItem={(fromIndex, toIndex) => {
+                                reorderFormGroupItem('', fromIndex, toIndex);
+                            }}
+                         />
                     </div>
                 </DndContext>
             </main>
