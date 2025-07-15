@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { usePreview } from "@/hooks/usePreview";
-import { HiBars3BottomLeft, HiOutlineSun, HiPencil } from "react-icons/hi2";
-
+import { HiBars3BottomLeft, HiOutlineSun, HiPencil, HiOutlineMoon } from "react-icons/hi2";
+import { useTheme } from "next-themes"
 import { HiArrowUturnLeft, HiArrowUturnRight } from "react-icons/hi2";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Moon, Sun } from "lucide-react";
 
 export default function BuilderHeader() {
+    const { setTheme, theme } = useTheme()
     const { undo, redo, canRedo, canUndo } = usePreview();
     const onPreview = () => {
         localStorage.clear();
@@ -31,9 +39,26 @@ export default function BuilderHeader() {
                 <Button size={'sm'} variant={'outline'} onClick={redo} disabled={!canRedo} aria-label="Redo">
                     <HiArrowUturnRight />
                 </Button>
-                <Button size={'sm'} variant={'outline'}>
-                    <HiOutlineSun />
-                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                            <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                            <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                            <span className="sr-only">Toggle theme</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setTheme("light")}>
+                            Light
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            Dark
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("system")}>
+                            System
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <Button size={'sm'} onClick={onPreview}>Preview</Button>
             </div>
         </header>

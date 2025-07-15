@@ -71,7 +71,7 @@ export default function EachFormGroup({
             <div className="flex flex-col gap-2">
               <div className="flex flex-col">
                 {'label' in targetData && (
-                  <label className="font-semibold text-base text-neutral-800 mb-1">
+                  <label className="font-semibold text-base mb-1">
                     {targetData.label}
                   </label>
                 )}

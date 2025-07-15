@@ -55,7 +55,7 @@ export default function BuilderLeftPanel() {
     })).filter(section => section.items.length > 0);
 
     return <>
-        <aside className={'w-[300px] h-screen border-r select-none sticky top-0'}>
+        <aside className={'w-[300px] max-w-[300px] h-screen border-r select-none sticky top-0'}>
             <div className={'h-12 flex items-center px-2 bg-gradient-to-t from-card via-card to-muted/50'}>
                 <div className={'font-bold text-xl flex gap-2 items-center'}>
                     <Image width={30} height={30} src={'/logo.png'} alt='logo' />

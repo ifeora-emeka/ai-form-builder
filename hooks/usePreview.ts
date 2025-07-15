@@ -1,7 +1,6 @@
-
 'use client';
 import { usePreviewContext } from '@/context/preview.context'
-import { FormGroupItem, FormElementType, FormFieldType, FormStep } from '@/types/builder.types'
+import { FormGroupItem, FormElementType, FormFieldType, FormStep, FormField } from '@/types/builder.types'
 import { getFormElementData } from '@/components/builder/data/form-section.data'
 import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
@@ -37,6 +36,24 @@ export function usePreview() {
             ...prev,
             formGroups: [...updated, moving],
         }))
+    }
+
+    function updateFormField(fieldId: string, data: Partial<FormField>) {
+        setState(prev => {
+            const fields = prev.fields.map(f =>
+                f.id === fieldId ? { ...f, ...data } : f
+            );
+            return { ...prev, fields };
+        });
+    }
+
+    function deleteFormGroup(formGroupId: string) {
+        setState(prev => {
+            const formGroups = prev.formGroups.map(fg =>
+                fg.id === formGroupId ? { ...fg, deleted: true } : fg
+            );
+            return { ...prev, formGroups };
+        });
     }
 
     function reorderFormGroupItem(step: string, oldIndex: number, newIndex: number) {
@@ -142,6 +159,8 @@ export function usePreview() {
         reorderFormGroupItem,
         appendFormGroupToPreview,
         updateFormStep,
+        updateFormField,
+        deleteFormGroup,
         undo,
         redo,
         canUndo,
