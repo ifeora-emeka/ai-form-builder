@@ -4,7 +4,6 @@ import EachFormStepContainer from "@/components/builder/EachFormStepContainer";
 import EachFormGroup from "@/components/builder/EachFormGroup";
 import React from "react";
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { usePreview } from '@/hooks/usePreview';
 import AddFormStep from "@/components/AddFormStep";
 import { FormElement, FormField, FormGroupItem, FormStep } from "@/types/builder.types";
 
@@ -23,8 +22,9 @@ export default function BuilderPreview(
         updateFormStep,
         deleteFormStep,
         moveFormGroupItem,
-        reorderFormGroupItem
-    }:{
+        reorderFormGroupItem,
+        updateFormField
+    }: {
         steps: FormStep[];
         formGroups: FormGroupItem[];
         elements: FormElement[];
@@ -38,6 +38,7 @@ export default function BuilderPreview(
         deleteFormStep: (stepId: string) => void;
         moveFormGroupItem: (fromIndex: number, toIndex: number) => void;
         reorderFormGroupItem: (fromIndex: number, toIndex: number) => void;
+        updateFormField: (id: string, data: Partial<FormField>) => void;
     }
 ) {
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
@@ -127,6 +128,12 @@ export default function BuilderPreview(
                                             return (
                                                 <React.Fragment key={groupData.id}>
                                                     <EachFormGroup
+                                                        onUpdateTarget={(id, data) => {
+                                                            if (groupData.type === 'field') {
+                                                                updateFormField(id, data as Partial<FormField>);
+                                                            }
+                                                        }}
+                                                        onUpdate={updateFormGroup}
                                                         onHide={() => updateFormGroup(groupData.id, {
                                                             hidden: !groupData.hidden
                                                         })}
@@ -168,7 +175,7 @@ export default function BuilderPreview(
                                     </div>
                                 </SortableContext>
                             </EachFormStepContainer>
-                            <AddFormStep />
+                            <AddFormStep topFormStep={step.index} />
                         </div>
                     );
                 })}

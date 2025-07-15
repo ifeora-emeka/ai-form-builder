@@ -164,9 +164,49 @@ export function usePreview() {
         setState(prev => ({
             ...prev,
             steps: prev.steps.map(step =>
-                step.id === id ? { ...step, ...data } : step
+                step.id === id ? { ...step, ...data, new: false } : step
             )
         }))
+    }
+
+    function addFormStep(topFormStep?: number) {
+        setState(prev => {
+            const insertIndex = typeof topFormStep === 'number' ? topFormStep + 1 : prev.steps.length;
+            const newStepId = `step-${Date.now()}`;
+            
+            const updatedSteps = prev.steps.map(step => {
+                if (step.index >= insertIndex) {
+                    return { ...step, index: step.index + 1 };
+                }
+                return step;
+            });
+            
+            updatedSteps.push({
+                id: newStepId,
+                index: insertIndex,
+                name: null,
+                hidden: false,
+                deleted: false,
+                new: true
+            } as FormStep);
+
+            updatedSteps.sort((a, b) => a.index - b.index);
+            
+            const updatedFormGroups = prev.formGroups.map(group => {
+                const step = prev.steps.find(s => s.id === group.formStep);
+                if (step && step.index >= insertIndex) {
+                    
+                    const newStep = updatedSteps.find(s => s.index === step.index + 1);
+                    return { ...group, formStep: newStep ? newStep.id : group.formStep };
+                }
+                return group;
+            });
+            return {
+                ...prev,
+                steps: updatedSteps,
+                formGroups: updatedFormGroups,
+            };
+        });
     }
 
     return {
@@ -185,6 +225,7 @@ export function usePreview() {
         canRedo,
         setActiveFormGroup,
         activeFormGroup,
-        activeFormSection
+        activeFormSection,
+        addFormStep,
     }
 }

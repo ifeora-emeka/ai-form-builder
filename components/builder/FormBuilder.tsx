@@ -6,6 +6,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { usePreview } from '@/hooks/usePreview';
 import React from 'react';
 import BuilderRightPanel from "./layout/BuilderRightPanel";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default function FormBuilder() {
     const sensors = useSensors(
@@ -26,6 +27,7 @@ export default function FormBuilder() {
         deleteFormStep,
         moveFormGroupItem,
         reorderFormGroupItem,
+        updateFormField
     } = usePreview();
 
     const [ready, setReady] = React.useState(false);
@@ -81,10 +83,11 @@ export default function FormBuilder() {
         <BuilderLeftPanel />
         <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
             <BuilderHeader />
-            <main className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
+            <ScrollArea className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
                     <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center">
                         <BuilderPreview
+                            updateFormField={updateFormField}
                             steps={steps}
                             formGroups={formGroups}
                             elements={elements}
@@ -111,7 +114,7 @@ export default function FormBuilder() {
                          />
                     </div>
                 </DndContext>
-            </main>
+            </ScrollArea>
         </div>
         <BuilderRightPanel />
     </div>

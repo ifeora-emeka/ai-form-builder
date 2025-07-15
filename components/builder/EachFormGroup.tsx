@@ -5,8 +5,22 @@ import { CSS } from '@dnd-kit/utilities';
 import { FormElement, FormField, FormGroupItem } from "@/types/builder.types";
 import FormElementRenderer from "./FormElementRenderer";
 import FormFieldRenderer from "./FormFieldRenderer";
-import { HiBars3, HiOutlineEye, HiOutlineEyeSlash, HiOutlineTrash } from "react-icons/hi2";
+import { HiBars3, HiDocumentDuplicate, HiEye, HiEyeSlash, HiMiniStop, HiOutlineStop, HiTrash, } from "react-icons/hi2";
+import { Button } from '../ui/button';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction
+} from '../ui/alert-dialog';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
+
 
 export default function EachFormGroup({
   groupData,
@@ -15,7 +29,10 @@ export default function EachFormGroup({
   onClick,
   isActive = false,
   onDelete,
-  onHide
+  onHide,
+  onUpdate,
+  onUpdateTarget,
+  onDuplicate
 }: {
   groupData: FormGroupItem;
   targetData: FormElement | FormField;
@@ -24,8 +41,11 @@ export default function EachFormGroup({
   onClick: (id: string) => void;
   onDelete: (groupID: string) => void;
   onHide: (groupID: string) => void;
+  onUpdate: (id: string, data: Partial<FormGroupItem>) => void;
+  onUpdateTarget: (id: string, data: Partial<FormElement | FormField>) => void;
+  onDuplicate?: (formGroupID: string) => void;
 }) {
-  // console.log('HIDDEN::', isHidden)
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: groupData.id
   });
@@ -35,6 +55,7 @@ export default function EachFormGroup({
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 50 : undefined,
   };
+  const [showDelete, setShowDelete] = useState(false);
   return (
     <div
       ref={setNodeRef}
@@ -45,16 +66,46 @@ export default function EachFormGroup({
       }}
     >
       {
-        isActive && <small className={cn("px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity", {
+        isActive && <small id='tool-bar' className={cn("px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity", {
           "opacity-100": isActive
         })}>
           {groupData.type === 'element' ? 'Element' : 'Field'}
-          <button aria-label="Delete group" onClick={e => onDelete(groupData.id)}>
-            <HiOutlineTrash />
+          <button className="ml-2" onClick={e => { e.stopPropagation(); onHide(groupData.id); }}>
+            {isHidden ? <HiEyeSlash /> : <HiEye />}
           </button>
-          <button aria-label="Delete group">
-            <HiOutlineEye />
-            <HiOutlineEyeSlash />
+          <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
+            <AlertDialogTrigger asChild>
+              <button onClick={e => { e.stopPropagation(); setShowDelete(true); }}>
+                <HiTrash />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this group?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this group? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setShowDelete(false)}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => { onDelete(groupData.id); setShowDelete(false); }}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          {'required' in targetData && (
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onUpdateTarget(targetData.id, { required: !(targetData as FormField).required });
+              }}
+            >
+              {
+                (targetData as FormField).required ? <HiMiniStop /> : <HiOutlineStop />
+              }
+            </button>
+          )}
+          <button>
+            <HiDocumentDuplicate />
           </button>
         </small>
       }

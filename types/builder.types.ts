@@ -4,6 +4,7 @@ export type FormStep = {
     name: string | null;
     hidden: boolean;
     deleted: boolean;
+    new?: boolean;
 }
 
 export type FormGroupItem = {
