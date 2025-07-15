@@ -1,3 +1,6 @@
+  <img src='./docs/image.png' />
+  <hr/>
+
 # 📝 FORM AI – The AI Form Builder
 
 <h2 align="center">Build smarter forms, faster – with AI ✨</h2>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { usePreview } from "@/hooks/usePreview";
-import { HiBars3BottomLeft, HiOutlineSun, HiPencil, HiOutlineMoon } from "react-icons/hi2";
+import { HiBars3BottomLeft, HiPencil } from "react-icons/hi2";
 import { useTheme } from "next-themes"
 import { HiArrowUturnLeft, HiArrowUturnRight } from "react-icons/hi2";
 import {
