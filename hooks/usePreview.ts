@@ -1,17 +1,33 @@
-'use client';
+"use client";
+import React from "react";
 import { usePreviewContext } from '@/context/preview.context'
-import { FormGroupItem, FormElementType, FormFieldType, FormStep, FormField } from '@/types/builder.types'
+import { FormGroupItem, FormElementType, FormFieldType, FormStep, FormField, FormElement } from '@/types/builder.types'
 import { getFormElementData } from '@/components/builder/data/form-section.data'
 import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
 
 export function usePreview() {
+    const updateElementDebounceRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    function updateElement(elementId: string, data: Partial<FormElement>) {
+        if (updateElementDebounceRef.current) clearTimeout(updateElementDebounceRef.current);
+        updateElementDebounceRef.current = setTimeout(() => {
+            setState(prev => {
+                const elements = prev.elements.map(el =>
+                    el.id === elementId ? { ...el, ...data } : el
+                );
+                return { ...prev, elements };
+            });
+        }, 300);
+    };
+
     function deleteFormStep(stepId: string) {
         setState(prev => ({
             ...prev,
             steps: prev.steps.map(s => s.id === stepId ? { ...s, deleted: true } : s)
         }));
-    }
+    };
+    
     const ctx = usePreviewContext();
     const { state, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup, activeFormSection } = ctx;
 
@@ -173,14 +189,14 @@ export function usePreview() {
         setState(prev => {
             const insertIndex = typeof topFormStep === 'number' ? topFormStep + 1 : prev.steps.length;
             const newStepId = `step-${Date.now()}`;
-            
+
             const updatedSteps = prev.steps.map(step => {
                 if (step.index >= insertIndex) {
                     return { ...step, index: step.index + 1 };
                 }
                 return step;
             });
-            
+
             updatedSteps.push({
                 id: newStepId,
                 index: insertIndex,
@@ -191,11 +207,11 @@ export function usePreview() {
             } as FormStep);
 
             updatedSteps.sort((a, b) => a.index - b.index);
-            
+
             const updatedFormGroups = prev.formGroups.map(group => {
                 const step = prev.steps.find(s => s.id === group.formStep);
                 if (step && step.index >= insertIndex) {
-                    
+
                     const newStep = updatedSteps.find(s => s.index === step.index + 1);
                     return { ...group, formStep: newStep ? newStep.id : group.formStep };
                 }
@@ -217,6 +233,7 @@ export function usePreview() {
         updateFormStep,
         updateFormField,
         updateFormGroup,
+        updateElement,
         deleteFormGroup,
         deleteFormStep,
         undo,

@@ -23,6 +23,7 @@ type Props = {
   hideToolbar?: boolean;
   debounce?: number;
   className?: string;
+  onBlur: () => void;
 };
 
 export default function RichTextEditor({
@@ -31,7 +32,8 @@ export default function RichTextEditor({
   placeholder = 'Start typing...',
   hideToolbar = false,
   debounce = 300,
-  className = ''
+  className = '',
+  onBlur
 }: Props) {
   const [debouncedContent, setDebouncedContent] = React.useState(content);
   
@@ -268,6 +270,12 @@ export default function RichTextEditor({
       <EditorContent
         editor={editor}
         className="min-h-[120px] [&_.ProseMirror]:outline-none [&_.ProseMirror]:border-none"
+        onBlur={() => {
+          if (editor && editor.isFocused) {
+            editor.commands.blur();
+            if (onBlur) onBlur();
+          }
+        }}
       />
     </div>
   );

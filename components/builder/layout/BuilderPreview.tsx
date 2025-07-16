@@ -9,39 +9,39 @@ import { FormElement, FormField, FormGroupItem, FormStep } from "@/types/builder
 import AIChat from "@/components/AIChat";
 
 
-export default function BuilderPreview(
-    {
-        steps,
-        formGroups,
-        elements,
-        fields,
-        appendFormGroupToPreview,
-        setActiveFormGroup,
-        activeFormGroup,
-        updateFormGroup,
-        deleteFormGroup,
-        updateFormStep,
-        deleteFormStep,
-        moveFormGroupItem,
-        reorderFormGroupItem,
-        updateFormField
-    }: {
-        steps: FormStep[];
-        formGroups: FormGroupItem[];
-        elements: FormElement[];
-        fields: FormField[];
-        appendFormGroupToPreview: (data: { type: string, stepId: string, kind: string, file?: File, index?: number }) => void;
-        setActiveFormGroup: (formGroupId: string) => void;
-        activeFormGroup: string | null;
-        updateFormGroup: (id: string, data: Partial<FormGroupItem>) => void;
-        deleteFormGroup: (id: string) => void;
-        updateFormStep: (id: string, data: Partial<FormStep>) => void;
-        deleteFormStep: (stepId: string) => void;
-        moveFormGroupItem: (fromIndex: number, toIndex: number) => void;
-        reorderFormGroupItem: (fromIndex: number, toIndex: number) => void;
-        updateFormField: (id: string, data: Partial<FormField>) => void;
-    }
-) {
+export default function BuilderPreview({
+    steps,
+    formGroups,
+    elements,
+    fields,
+    appendFormGroupToPreview,
+    setActiveFormGroup,
+    activeFormGroup,
+    updateFormGroup,
+    deleteFormGroup,
+    updateFormStep,
+    deleteFormStep,
+    moveFormGroupItem,
+    reorderFormGroupItem,
+    updateFormField,
+    updateElement,
+}: {
+    steps: FormStep[];
+    formGroups: FormGroupItem[];
+    elements: FormElement[];
+    fields: FormField[];
+    appendFormGroupToPreview: (data: { type: string, stepId: string, kind: string, file?: File, index?: number }) => void;
+    setActiveFormGroup: (formGroupId: string) => void;
+    activeFormGroup: string | null;
+    updateFormGroup: (id: string, data: Partial<FormGroupItem>) => void;
+    deleteFormGroup: (id: string) => void;
+    updateFormStep: (id: string, data: Partial<FormStep>) => void;
+    deleteFormStep: (stepId: string) => void;
+    moveFormGroupItem: (fromIndex: number, toIndex: number) => void;
+    reorderFormGroupItem: (fromIndex: number, toIndex: number) => void;
+    updateFormField: (id: string, data: Partial<FormField>) => void;
+    updateElement: (id: string, data: Partial<FormElement>) => void;
+}) {
     const [dragOver, setDragOver] = React.useState<{ stepId: string, index: number } | null>(null);
 
     function handleDrop(e: React.DragEvent, stepId: string, insertIndex: number) {
@@ -129,6 +129,11 @@ export default function BuilderPreview(
                                             return (
                                                 <React.Fragment key={groupData.id}>
                                                     <EachFormGroup
+                                                        onUpdateElement={(id, data) => {
+                                                            if (groupData.type === 'element') {
+                                                                updateElement(id, data as Partial<FormElement>);
+                                                            }
+                                                        }}
                                                         onUpdateTarget={(id, data) => {
                                                             if (groupData.type === 'field') {
                                                                 updateFormField(id, data as Partial<FormField>);

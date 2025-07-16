@@ -29,7 +29,8 @@ export default function FormBuilder() {
         deleteFormStep,
         moveFormGroupItem,
         reorderFormGroupItem,
-        updateFormField
+        updateFormField,
+        updateElement
     } = usePreview();
 
     const [ready, setReady] = React.useState(false);
@@ -87,10 +88,14 @@ export default function FormBuilder() {
                 <BuilderLeftPanel />
                 <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
                     <BuilderHeader />
-                    <ScrollArea className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
+                    <ScrollArea 
+                    onClick={() => setActiveFormGroup(null)}
+                    className="h-[calc(100vh-3rem)] overflow-y-auto w-full"
+                    >
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
                             <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center ">
                                 <BuilderPreview
+                                    updateElement={updateElement}
                                     updateFormField={updateFormField}
                                     steps={steps}
                                     formGroups={formGroups}

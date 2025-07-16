@@ -5,42 +5,46 @@ import { Separator } from '@/components/ui/separator';
 
 type Props = {
     data: FormElement;
+    onUpdate: (id: string, data: Partial<FormElement>) => void;
 }
 
-export default function FormElementRenderer({ data }: Props) {
+export default function FormElementRenderer({ data, onUpdate }: Props) {
+  const content = data.content || '';
   switch (data.type) {
     case 'rich-text':
       return (
         <RichTextEditor
-          content={data.content || ''}
+          content={content}
           hideToolbar={true}
-          className="border-none p-0 hover:bg-input/20"
+          className="border-none p-0"
+          onChange={val => onUpdate(data.id, { content: val })}
+          onBlur={() => {}}
         />
       );
     case 'plain-text':
       return (
         <div className="text-sm text-foreground">
-          {data.content}
+          {content}
         </div>
       );
     case 'image':
-      if (!data.content) return null;
+      if (!content) return null;
       return (
         <div className="flex justify-center">
           <img
-            src={data.content}
+            src={content}
             alt="Form element"
             className="max-w-full h-auto rounded-md"
           />
         </div>
       );
     case 'video':
-      if (!data.content) return null;
+      if (!content) return null;
       return (
         <div className="flex justify-center">
           <div className="w-full max-w-2xl aspect-video">
             <iframe
-              src={data.content}
+              src={content}
               className="w-full h-full rounded-md"
               frameBorder="0"
               allowFullScreen

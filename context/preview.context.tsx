@@ -84,13 +84,12 @@ type PreviewContextType = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  setActiveFormGroup: (formGroupId: string) => void;
+  setActiveFormGroup: (formGroupId: string | null) => void;
   activeFormGroup: string | null;
   activeFormSection: string | null;
 };
 
 const PreviewContext = createContext<PreviewContextType | undefined>(undefined);
-
 
 export const usePreviewContext = () => {
   const ctx = useContext(PreviewContext);
@@ -98,13 +97,13 @@ export const usePreviewContext = () => {
   return ctx;
 };
 
-
 export const PreviewProvider = ({ children }: { children: React.ReactNode }) => {
   const [rehydrated, setRehydrated] = React.useState(false);
   const history = useHistoryState<PreviewState>(defaultState);
   const { state, setState, undo, redo, canUndo, canRedo } = history;
   const [active, setActive] = React.useState<ActiveState>({ activeFormGroup: null, activeFormSection: null });
-  React.useEffect(() => {
+
+  useEffect(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem('previewState') : null;
     if (saved) {
       try {
@@ -112,24 +111,28 @@ export const PreviewProvider = ({ children }: { children: React.ReactNode }) => 
       } catch {}
     }
     setRehydrated(true);
-    // eslint-disable-next-line
   }, []);
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (rehydrated) {
       localStorage.setItem('previewState', JSON.stringify(state));
     }
   }, [state, rehydrated]);
+
   const updatePreviewContext = (updates: Partial<PreviewState>) => {
     setState((prev: PreviewState) => ({ ...prev, ...updates }));
   };
-  const setActiveFormGroup = (formGroupId: string) => {
-    const group = state.formGroups.find(g => g.id === formGroupId);
+
+  const setActiveFormGroup = (formGroupId: string | null) => {
+    const group = formGroupId ? state.formGroups.find(g => g.id === formGroupId) : null;
     setActive({
       activeFormGroup: formGroupId,
       activeFormSection: group ? group.formStep : null
     });
   };
+
   if (!rehydrated) return null;
+
   return (
     <PreviewContext.Provider value={{ state, updatePreviewContext, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup: active.activeFormGroup, activeFormSection: active.activeFormSection }}>
       {children}
