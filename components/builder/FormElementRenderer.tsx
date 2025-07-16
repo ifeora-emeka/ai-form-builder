@@ -30,11 +30,11 @@ export default function FormElementRenderer({ data, onUpdate }: Props) {
     case 'image':
       if (!content) return null;
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-center max-h-[500px] items-center">
           <img
             src={content}
             alt="Form element"
-            className="max-w-full h-auto rounded-md"
+            className="max-w-full h-full rounded-md object-cover"
           />
         </div>
       );

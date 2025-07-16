@@ -17,7 +17,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction
 } from '../ui/alert-dialog';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import AutowidthInput from 'react-autowidth-input';
@@ -63,6 +63,12 @@ export default function EachFormGroup({
     zIndex: isDragging ? 50 : undefined,
   };
   const [showDelete, setShowDelete] = useState(false);
+
+  useEffect(() => {
+    setLabel((targetData as FormField).label || '');
+    setInfo((targetData as FormField).info || '');
+  }, [targetData])
+
   return (
     <div
       ref={setNodeRef}

@@ -35,6 +35,7 @@ export default function AIChat() {
     return <>
         <div className='fixed bottom-4 xl:w-[640px] w-full 2xl:w-[700px] max-w-[1000px] z-50 flex justify-center items-center'>
             <div
+                onClick={e => e.stopPropagation()}
                 className={cn('border-2 rounded-full flex bg-sidebar w-[95%] items-center overflow-hidden shadow-xl', {
                     "border-primary": focused,
                     "rounded-xl": response,

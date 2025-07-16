@@ -5,13 +5,14 @@ import { FormGroupItem, FormElementType, FormFieldType, FormStep, FormField, For
 import { getFormElementData } from '@/components/builder/data/form-section.data'
 import { getFormFieldData } from '@/components/builder/data/form-field.data'
 import { generateRandomID } from '@/lib/random'
+import { debounce } from 'lodash'
 
 export function usePreview() {
-    const updateElementDebounceRef = React.useRef<NodeJS.Timeout | null>(null);
-
-    function updateElement(elementId: string, data: Partial<FormElement>) {
-        if (updateElementDebounceRef.current) clearTimeout(updateElementDebounceRef.current);
-        updateElementDebounceRef.current = setTimeout(() => {
+    const ctx = usePreviewContext();
+    const { state, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup, activeFormSection } = ctx;
+    
+    const updateElement = React.useMemo(() => {
+        return debounce((elementId: string, data: Partial<FormElement>) => {
             setState(prev => {
                 const elements = prev.elements.map(el =>
                     el.id === elementId ? { ...el, ...data } : el
@@ -19,7 +20,7 @@ export function usePreview() {
                 return { ...prev, elements };
             });
         }, 300);
-    };
+    }, [setState]);
 
     function deleteFormStep(stepId: string) {
         setState(prev => ({
@@ -27,9 +28,6 @@ export function usePreview() {
             steps: prev.steps.map(s => s.id === stepId ? { ...s, deleted: true } : s)
         }));
     };
-    
-    const ctx = usePreviewContext();
-    const { state, setState, undo, redo, canUndo, canRedo, setActiveFormGroup, activeFormGroup, activeFormSection } = ctx;
 
     function moveFormGroupItem(
         fromStep: string,
@@ -92,15 +90,19 @@ export function usePreview() {
         const items = state.formGroups
             .filter((item) => item.formStep === step)
             .sort((a, b) => a.index - b.index)
+
         if (oldIndex === newIndex) return
+
         const moving = items[oldIndex]
         const rest = items.filter((_, i) => i !== oldIndex)
         rest.splice(newIndex, 0, moving)
+
         const updated = state.formGroups.map((item) => {
             if (item.formStep !== step) return item
             const idx = rest.findIndex((i) => i.id === item.id)
             return { ...item, index: idx }
-        })
+        });
+
         setState((prev) => ({ ...prev, formGroups: updated }))
     }
 
@@ -119,6 +121,7 @@ export function usePreview() {
     }) {
         let newGroupItem: FormGroupItem, newElement: any, newField: any;
         const groupIndex = typeof index === 'number' ? index : state.formGroups.filter(i => i.formStep === stepId).length;
+        
         setState(prev => {
             const items = prev.formGroups.filter(item => item.formStep === stepId).sort((a, b) => a.index - b.index);
             let updatedformGroups = [...prev.formGroups];

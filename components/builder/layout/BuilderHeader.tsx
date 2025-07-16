@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { usePreview } from "@/hooks/usePreview";
-import { HiBars3BottomLeft, HiPencil } from "react-icons/hi2";
+import { HiBars3BottomLeft, HiOutlineArrowPath, HiPencil } from "react-icons/hi2";
 import { useTheme } from "next-themes"
 import { HiArrowUturnLeft, HiArrowUturnRight } from "react-icons/hi2";
 import {
@@ -59,7 +59,10 @@ export default function BuilderHeader() {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Button size={'sm'} onClick={onPreview}>Preview</Button>
+                <Button size={'sm'} variant={'outline'} onClick={onPreview} aria-label="Redo">
+                    <HiOutlineArrowPath />
+                </Button>
+                <Button size={'sm'}>Preview</Button>
             </div>
         </header>
     );

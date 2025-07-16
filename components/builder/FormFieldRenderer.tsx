@@ -54,7 +54,6 @@ export default function FormFieldRenderer({ data }: Props) {
         </Select>
       )
     case 'radio-group':
-      // Use local state for demo; in real app, lift state up
       const [selected, setSelected] = React.useState(data.defaultValue || '');
       return (
         <RadioGroup

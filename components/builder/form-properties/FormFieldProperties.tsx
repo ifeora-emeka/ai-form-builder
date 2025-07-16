@@ -6,7 +6,11 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 
 import { Button } from '@/components/ui/button'
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogTrigger, 
+    AlertDialogContent, AlertDialogHeader, 
+    AlertDialogTitle, AlertDialogDescription, 
+    AlertDialogFooter, AlertDialogCancel, AlertDialogAction 
+} from '@/components/ui/alert-dialog';
 import { FormGroupItem } from '@/types/builder.types'
 import { usePreview } from '@/hooks/usePreview'
 
