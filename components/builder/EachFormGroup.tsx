@@ -20,6 +20,7 @@ import {
 } from '../ui/alert-dialog';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 
 export default function EachFormGroup({
@@ -45,7 +46,6 @@ export default function EachFormGroup({
   onUpdateTarget: (id: string, data: Partial<FormElement | FormField>) => void;
   onDuplicate?: (formGroupID: string) => void;
 }) {
-
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: groupData.id
   });
@@ -56,6 +56,122 @@ export default function EachFormGroup({
     zIndex: isDragging ? 50 : undefined,
   };
   const [showDelete, setShowDelete] = useState(false);
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative group select-none cursor-default"
+      onClick={e => {
+        e.stopPropagation();
+        onClick(groupData.id);
+      }}
+    >
+      {isActive && (
+        <small
+          id="tool-bar"
+          className={cn(
+            "px-2 flex gap-2 items-center rounded-tl-md rounded-tr-md bg-secondary text-secondary-foreground absolute top-[-1.2rem] left-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity",
+            { "opacity-100": isActive }
+          )}
+        >
+          {groupData.type === 'element' ? 'Element' : 'Field'}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="ml-2" onClick={e => { e.stopPropagation(); onHide(groupData.id); }} aria-label={isHidden ? 'Show' : 'Hide'}>
+                  {isHidden ? <HiEyeSlash /> : <HiEye />}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{isHidden ? 'Show' : 'Hide'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={e => { e.stopPropagation(); setShowDelete(true); }} aria-label="Delete">
+                  <HiTrash />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
+            {'required' in targetData && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation();
+                      onUpdateTarget(targetData.id, { required: !(targetData as FormField).required });
+                    }}
+                    aria-label={(targetData as FormField).required ? 'Mark as optional' : 'Mark as required'}
+                  >
+                    {(targetData as FormField).required ? <HiMiniStop /> : <HiOutlineStop />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>{(targetData as FormField).required ? 'Mark as optional' : 'Mark as required'}</TooltipContent>
+              </Tooltip>
+            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={e => { e.stopPropagation(); onDuplicate && onDuplicate(groupData.id); }} aria-label="Duplicate">
+                  <HiDocumentDuplicate />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Duplicate</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
+            <AlertDialogTrigger asChild>
+              <div />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this group?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this group? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setShowDelete(false)}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => { onDelete(groupData.id); setShowDelete(false); }}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </small>
+      )}
+      <div className={cn("flex gap-2 px-9 py-2 pl-0", {
+        'hover:outline-1 outline-secondary/30 hover:shadow-sm hover:outline-dashed': !isHidden,
+        'outline-1 outline-secondary hover:outline-solid': isActive
+      })}>
+        <div
+          className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity"
+          id="drag-handle"
+          {...attributes}
+          {...listeners}
+        >
+          <button aria-label="Drag field" className="px-2 flex items-center justify-center rounded-full transition-colors cursor-grab">
+            <HiBars3 />
+          </button>
+        </div>
+        <div className={cn('flex flex-col gap-2 flex-1', { "opacity-40": isHidden })}>
+          {groupData.type === 'element' ? (
+            <FormElementRenderer data={targetData as FormElement} />
+          ) : (
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col">
+                {'label' in targetData && (
+                  <label className="font-semibold text-base mb-1">
+                    {(targetData as FormField).label} {(targetData as FormField).required && <span className='text-destructive'>*</span>}
+                  </label>
+                )}
+                {'info' in targetData && (targetData as FormField).info && (
+                  <small className="text-muted-foreground">{(targetData as FormField).info}</small>
+                )}
+              </div>
+              <FormFieldRenderer data={targetData as FormField} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
   return (
     <div
       ref={setNodeRef}
@@ -131,10 +247,12 @@ export default function EachFormGroup({
               <div className="flex flex-col">
                 {'label' in targetData && (
                   <label className="font-semibold text-base mb-1">
-                    {targetData.label} {targetData.required && <span className='text-destructive'>*</span>}
+                    {(targetData as FormField).label} {(targetData as FormField).required && <span className='text-destructive'>*</span>}
                   </label>
                 )}
-                {'info' in targetData && targetData.info && (<small className="text-muted-foreground">{targetData.info}</small>)}
+                {'info' in targetData && (targetData as FormField).info && (
+                  <small className="text-muted-foreground">{(targetData as FormField).info}</small>
+                )}
               </div>
               <FormFieldRenderer data={targetData as FormField} />
             </div>

@@ -6,6 +6,7 @@ import React from "react";
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import AddFormStep from "@/components/AddFormStep";
 import { FormElement, FormField, FormGroupItem, FormStep } from "@/types/builder.types";
+import AIChat from "@/components/AIChat";
 
 
 export default function BuilderPreview(
@@ -94,7 +95,7 @@ export default function BuilderPreview(
                         .slice()
                         .sort((a, b) => a.index - b.index);
                     return (
-                        <div key={step.id} className="rounded-lg min-h-[80px] flex flex-col">
+                        <div key={step.id} className="rounded-lg min-h-[80px] flex flex-col relative">
                             <EachFormStepContainer
                                 updateFormStep={updateFormStep}
                                 data={step}
@@ -160,7 +161,7 @@ export default function BuilderPreview(
                                             );
                                         })}
 
-                                        {groups.length === 0 && (
+                                        {groups.filter(group => !group.deleted).length === 0 && (
                                             <div
                                                 className="min-h-[60px] mx-4 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm relative"
                                                 onDrop={(e) => handleDrop(e, step.id, 0)}
@@ -179,6 +180,7 @@ export default function BuilderPreview(
                         </div>
                     );
                 })}
+            <AIChat />
         </div>
     );
 }

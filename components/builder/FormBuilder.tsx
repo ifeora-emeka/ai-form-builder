@@ -7,7 +7,8 @@ import { usePreview } from '@/hooks/usePreview';
 import React from 'react';
 import BuilderRightPanel from "./layout/BuilderRightPanel";
 import { ScrollArea } from "../ui/scroll-area";
-import AIChat from "../AIChat";
+import { AIProvider } from "@/context/ai.context";
+
 
 export default function FormBuilder() {
     const sensors = useSensors(
@@ -80,45 +81,48 @@ export default function FormBuilder() {
         }
     }
 
-    return <div className={'bg-background min-h-screen flex'}>
-        <BuilderLeftPanel />
-        <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
-            <BuilderHeader />
-            <ScrollArea className="h-[calc(100vh-3rem)] overflow-y-auto w-full relative">
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
-                    <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center ">
-                        <BuilderPreview
-                            updateFormField={updateFormField}
-                            steps={steps}
-                            formGroups={formGroups}
-                            elements={elements}
-                            fields={fields}
-                            appendFormGroupToPreview={(data) => {
-                                appendFormGroupToPreview({
-                                    ...data,
-                                    type: data.type as any,
-                                    kind: data.kind as 'element' | 'field',
-                                });
-                            }}
-                            setActiveFormGroup={setActiveFormGroup}
-                            activeFormGroup={activeFormGroup}
-                            updateFormGroup={updateFormGroup}
-                            deleteFormGroup={deleteFormGroup}
-                            updateFormStep={updateFormStep}
-                            deleteFormStep={deleteFormStep}
-                            moveFormGroupItem={(fromIndex, toIndex) => {
-                                moveFormGroupItem('', '', fromIndex, toIndex);
-                            }}
-                            reorderFormGroupItem={(fromIndex, toIndex) => {
-                                reorderFormGroupItem('', fromIndex, toIndex);
-                            }}
-                        />
-                        <div className="h-40" />
-                    </div>
-                </DndContext>
-                <AIChat />
-            </ScrollArea>
-        </div>
-        <BuilderRightPanel />
-    </div>
+    return <>
+        <AIProvider>
+            <div className={'bg-background min-h-screen flex'}>
+                <BuilderLeftPanel />
+                <div className={'flex-1 h-screen flex flex-col items-center bg-background'}>
+                    <BuilderHeader />
+                    <ScrollArea className="h-[calc(100vh-3rem)] overflow-y-auto w-full">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
+                            <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} className="w-full h-full flex-1 flex flex-col items-center ">
+                                <BuilderPreview
+                                    updateFormField={updateFormField}
+                                    steps={steps}
+                                    formGroups={formGroups}
+                                    elements={elements}
+                                    fields={fields}
+                                    appendFormGroupToPreview={(data) => {
+                                        appendFormGroupToPreview({
+                                            ...data,
+                                            type: data.type as any,
+                                            kind: data.kind as 'element' | 'field',
+                                        });
+                                    }}
+                                    setActiveFormGroup={setActiveFormGroup}
+                                    activeFormGroup={activeFormGroup}
+                                    updateFormGroup={updateFormGroup}
+                                    deleteFormGroup={deleteFormGroup}
+                                    updateFormStep={updateFormStep}
+                                    deleteFormStep={deleteFormStep}
+                                    moveFormGroupItem={(fromIndex, toIndex) => {
+                                        moveFormGroupItem('', '', fromIndex, toIndex);
+                                    }}
+                                    reorderFormGroupItem={(fromIndex, toIndex) => {
+                                        reorderFormGroupItem('', fromIndex, toIndex);
+                                    }}
+                                />
+                                <div className="h-40" />
+                            </div>
+                        </DndContext>
+                    </ScrollArea>
+                </div>
+                <BuilderRightPanel />
+            </div>
+        </AIProvider>
+    </>
 }
