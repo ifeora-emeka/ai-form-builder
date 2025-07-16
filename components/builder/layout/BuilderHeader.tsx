@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { usePreview } from "@/hooks/usePreview";
-import { HiBars3BottomLeft, HiOutlineArrowPath, HiPencil } from "react-icons/hi2";
-import { useTheme } from "next-themes"
+import { HiBars3BottomLeft, HiOutlineArrowPath, HiPencil, HiEye } from "react-icons/hi2";
+import { useTheme } from "next-themes";
 import { HiArrowUturnLeft, HiArrowUturnRight } from "react-icons/hi2";
+import { useRouter } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,11 +13,10 @@ import {
 import { Moon, Sun } from "lucide-react";
 
 export default function BuilderHeader() {
-    const { setTheme, theme } = useTheme()
+    const { setTheme, theme } = useTheme();
     const { undo, redo, canRedo, canUndo } = usePreview();
     const onPreview = () => {
-        localStorage.clear();
-        window.location.reload();
+        window.open("/live/test-form", "_blank");
     };
 
     return (
@@ -59,10 +59,10 @@ export default function BuilderHeader() {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Button size={'sm'} variant={'outline'} onClick={onPreview} aria-label="Redo">
-                    <HiOutlineArrowPath />
+                <Button size={'sm'} variant={'outline'} onClick={onPreview} aria-label="Preview">
+                    <HiEye />
+                    <span className="ml-1 hidden md:inline">Preview</span>
                 </Button>
-                <Button size={'sm'}>Preview</Button>
             </div>
         </header>
     );

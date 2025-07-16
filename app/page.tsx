@@ -1,11 +1,9 @@
-import Image from "next/image";
-import FormBuilder from "@/components/builder/FormBuilder";
-import { PreviewProvider } from '@/context/preview.context';
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <PreviewProvider>
-      <FormBuilder/>
-    </PreviewProvider>
+    <Link href={`/forms/test-form`} className="p-36">
+      Go to Form Builder
+    </Link>
   );
 }
